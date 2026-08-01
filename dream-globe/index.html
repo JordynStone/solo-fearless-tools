@@ -186,8 +186,12 @@ svg.globe:active{cursor:grabbing}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<!-- These live here rather than on someone else's server. Measured from Go's
+     machine, the outside copies took 1.3s and 0.2s to arrive and the map data
+     another 1.3s, which is why the globe sometimes needed refreshing before it
+     would draw. Nothing here needs the internet beyond this page. -->
+<script src="d3.min.js"></script>
+<script src="topojson.min.js"></script>
 
 <script>
 const DESTS=[
@@ -290,7 +294,8 @@ const cg=svg.append('g').attr('class','countries');
 const pg=svg.append('g').attr('class','pins');
 
 async function loadWorld(){
-  const urls=['https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json','https://unpkg.com/world-atlas@2/countries-50m.json'];
+  // Our own copy first. The two outside ones stay as a last resort only.
+  const urls=['countries-50m.json','https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json','https://unpkg.com/world-atlas@2/countries-50m.json'];
   for(const u of urls){
     try{const r=await fetch(u);if(r.ok)return await r.json();}catch(e){}
   }
