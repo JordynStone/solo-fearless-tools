@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fearless Roadmap — Layer 5</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+      radial-gradient(520px 320px at 8% 4%, rgba(212,165,116,0.20), rgba(212,165,116,0) 70%),
+      radial-gradient(460px 300px at 94% 12%, rgba(232,168,124,0.18), rgba(232,168,124,0) 70%),
+      radial-gradient(600px 360px at 50% 104%, rgba(44,95,93,0.10), rgba(44,95,93,0) 72%),
+      #F8F6F0;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #3A3A3A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button, label, input, textarea { font-family: inherit; }
+  button:not(:disabled):hover, label[style*='cursor']:hover { transform: translateY(-2px); }
+  button:not(:disabled):active, label[style*='cursor']:active { transform: translateY(0); }
+  textarea:focus, input[type='text']:focus { border-color: #D4A574 !important; outline: none;
+    box-shadow: inset 0 2px 4px rgba(44,95,93,0.07), 0 0 0 3px rgba(212,165,116,0.18); }
+  #root { padding: 0 16px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+const T='#2C5F5D',TD='#1e4442',G='#D4A574',C='#F8F6F0',COR='#E8A87C';
+const BGP='#ffffff',BGS='#F8F6F0',TXP='#3A3A3A',TXS='#666666',TXT='#999999';
+const BDT='#E8E4DC',BDS='#CCBCB0',SUCC_BG='#EAF3DE',SUCC_TX='#3B6D11';
+const NEXT='https://www.skool.com/solo-and-fearless-3331/classroom/f50566b1?md=4d504fcb43e74dbc8a7e192eefce1bd3';
+
+// Inline SVG icons (replacing lucide-react)
+const Icon = ({ size = 16, children, style }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    style={style}>{children}</svg>
+);
+const UploadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
+const ArrowRightIcon = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
+const ArrowLeftIcon = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+const DownloadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
+const CheckIcon = (p) => <Icon {...p}><polyline points="20 6 9 17 4 12"/></Icon>;
+
+const FACTORS=[
+  {id:'language',label:'New language'},
+  {id:'currency',label:'New currency'},
+  {id:'food',label:'New food'},
+  {id:'transport',label:'New transportation system'},
+  {id:'culture',label:'New cultural norms'},
+  {id:'climate',label:'New climate'},
+  {id:'timezone',label:'New time zone'}
+];
+
+const PRACTICAL=[
+  {id:'getThere',q:'Can I get there and back home easily?'},
+  {id:'communicate',q:'Can I communicate my basic needs?'},
+  {id:'food',q:'Can I find food I will actually eat?'},
+  {id:'navigate',q:'Can I get from the airport to my accommodation?'},
+  {id:'backup',q:'Do I have a backup plan if something goes wrong?'}
+];
+
+const GUT=[
+  {id:'excited',label:'Nervous but excited',desc:'My stomach has butterflies but I keep coming back to this destination.'},
+  {id:'terrified',label:'Terrified and overwhelmed',desc:'When I think about going I want to close the tab. The fear is louder than the pull.'},
+  {id:'bored',label:'Bored and unchallenged',desc:'Honestly? This feels too safe. I am not sure it would feel like anything at all.'}
+];
+
+function Hdr({sup,title,dark}) {
+  return <div style={{background:dark?TD:T,borderRadius:'12px 12px 0 0',padding:'20px 24px'}}>
+    <div style={{fontSize:11,fontWeight:500,letterSpacing:'1.5px',textTransform:'uppercase',color:G,marginBottom:8}}>{sup}</div>
+    <h1 style={{color:C,fontSize:19,fontWeight:500,margin:0,lineHeight:1.4}}>{title}</h1>
+  </div>;
+}
+function Crd({children,onBack}) {
+  return <div style={{background:BGP,border:`0.5px solid ${BDT}`,borderRadius:'0 0 12px 12px',padding:'24px'}}>
+    {onBack && <button onClick={onBack} style={{background:'#FFFFFF',border:'1px solid rgba(212,165,116,0.55)',color:'#2C5F5D',fontSize:13,fontWeight:700,borderRadius:999,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:6,padding:'9px 18px',marginBottom:16,fontFamily:'inherit',boxShadow:'0 8px 22px rgba(212,165,116,0.30)',transition:'transform .2s, box-shadow .2s'}}><ArrowLeftIcon size={13}/> Back</button>}
+    {children}
+  </div>;
+}
+function BtnP({onClick,disabled,children}) {
+  return <button onClick={onClick} disabled={disabled} style={{background:disabled?BGS:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:disabled?TXT:C,border:disabled?`0.5px solid ${BDT}`:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:disabled?'not-allowed':'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:disabled?'none':'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function BtnG({onClick,children}) {
+  return <button onClick={onClick} style={{background:'linear-gradient(to bottom, #E0B98A, #D4A574)',color:'#142E2C',border:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:'0 8px 22px rgba(212,165,116,0.45)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function NoteBox({title,children,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||G}`,padding:'12px 14px',marginBottom:14}}>
+    {title && <div style={{fontSize:13,fontWeight:500,color:TXP,marginBottom:4}}>{title}</div>}
+    <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>{children}</div>
+  </div>;
+}
+function SavedBlk({label,accent,prefix,value}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent}`,padding:'14px 16px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:accent===T?T:accent===G?'#b8884a':'#a05010',marginBottom:8}}>{label}</div>
+    <p style={{margin:0,fontSize:15,lineHeight:1.7}}>
+      {prefix && <span style={{color:TXT,fontSize:13}}>{prefix} </span>}
+      <span style={{fontWeight:500}}>{value}</span>
+    </p>
+  </div>;
+}
+function InfoTag({label,value,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||BDS}`,padding:'10px 14px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:TXS,marginBottom:4}}>{label}</div>
+    <div style={{fontSize:15,fontWeight:500,lineHeight:1.5,color:TXP}}>{value}</div>
+  </div>;
+}
+
+const bs=(mb=14)=>({fontSize:15,lineHeight:1.8,color:TXS,marginBottom:mb});
+const w={padding:'24px 0',maxWidth:540,margin:'0 auto'};
+const hs={fontSize:12,color:TXT,marginTop:6,lineHeight:1.6,fontStyle:'italic'};
+
+function ComfortScale({value,onChange}) {
+  return <div style={{marginBottom:8}}>
+    <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:TXS,marginBottom:8}}>
+      <span>1 — completely familiar</span>
+      <span>10 — completely foreign</span>
+    </div>
+    <div style={{display:'flex',gap:6,justifyContent:'space-between'}}>
+      {[1,2,3,4,5,6,7,8,9,10].map(n=>{
+        const sel=value===n;
+        const sweet=n>=3&&n<=6;
+        return <button key={n} onClick={()=>onChange(n)} style={{
+          flex:1,padding:'13px 0',borderRadius:999,border:sel?`2px solid ${T}`:`1.5px solid ${sweet?BDS:BDT}`,
+          background:sel?'linear-gradient(to bottom, #37716E, #2C5F5D)':sweet?BGS:BGP,color:sel?C:TXP,fontSize:14,fontWeight:700,cursor:'pointer',
+          fontFamily:'inherit',boxShadow:sel?'0 8px 22px rgba(44,95,93,0.32)':'0 10px 30px rgba(44,95,93,0.09)',transition:'all 0.15s, transform .2s, box-shadow .2s'
+        }}>{n}</button>;
+      })}
+    </div>
+    <p style={{fontSize:12,color:TXT,marginTop:10,lineHeight:1.6,fontStyle:'italic'}}>For a first trip, the sweet spot is somewhere between 3 and 6.</p>
+  </div>;
+}
+
+function FactorList({selected,onToggle}) {
+  return <div>
+    {FACTORS.map(f=>{
+      const sel=selected.includes(f.id);
+      return <div key={f.id} onClick={()=>onToggle(f.id)} style={{
+        border:`1.5px solid ${sel?T:BDS}`,borderRadius:14,padding:'12px 16px',cursor:'pointer',marginBottom:8,
+        background:sel?BGS:BGP,display:'flex',alignItems:'center',gap:12,boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'all 0.15s, transform .2s, box-shadow .2s'
+      }}>
+        <div style={{
+          width:20,height:20,borderRadius:5,border:`1.5px solid ${sel?T:BDS}`,background:sel?T:BGP,
+          display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0
+        }}>{sel && <CheckIcon size={13} style={{color:C}}/>}</div>
+        <div style={{fontSize:14,fontWeight:500,color:TXP}}>{f.label}</div>
+      </div>;
+    })}
+  </div>;
+}
+
+function YesNoCard({question,value,onChange}) {
+  return <div style={{marginBottom:14}}>
+    <div style={{fontSize:14,color:TXP,marginBottom:8,lineHeight:1.5,fontWeight:500}}>{question}</div>
+    <div style={{display:'flex',gap:8}}>
+      {['yes','unsure','no'].map(v=>{
+        const sel=value===v;
+        const colors={yes:T,unsure:G,no:COR};
+        return <button key={v} onClick={()=>onChange(v)} style={{
+          flex:1,padding:'11px 0',borderRadius:999,
+          border:sel?`2px solid ${colors[v]}`:`1.5px solid ${BDS}`,
+          background:sel?colors[v]:BGP,color:sel?(v==='unsure'?'#3A3A3A':C):TXP,
+          fontSize:13,fontWeight:700,cursor:'pointer',fontFamily:'inherit',textTransform:'capitalize',boxShadow:sel?'0 8px 22px rgba(44,95,93,0.28)':'0 10px 30px rgba(44,95,93,0.09)',transition:'all 0.15s, transform .2s, box-shadow .2s'
+        }}>{v==='unsure'?'Not sure':v}</button>;
+      })}
+    </div>
+  </div>;
+}
+
+function GutCard({option,selected,onClick}) {
+  const [hov,setHov]=useState(false);
+  const colors={excited:T,terrified:COR,bored:G};
+  const accent=colors[option.id];
+  const sel=selected===option.id;
+  return <div onClick={()=>onClick(option.id)} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+    style={{border:`1.5px solid ${sel?accent:hov?T:BDS}`,borderRadius:14,padding:'14px 16px',cursor:'pointer',marginBottom:10,
+      background:sel?BGS:hov?BGS:BGP,boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'all 0.15s, transform .2s, box-shadow .2s'}}>
+    <div style={{fontWeight:500,fontSize:14,marginBottom:4,color:TXP}}>{option.label}</div>
+    <div style={{fontSize:12,color:TXS,lineHeight:1.6}}>{option.desc}</div>
+  </div>;
+}
+
+function buildResult({comfort,factors,practical,gut}) {
+  const factorCount=factors.length;
+  const yesCount=Object.values(practical).filter(v=>v==='yes').length;
+  const noCount=Object.values(practical).filter(v=>v==='no').length;
+
+  let comfortRead;
+  if(comfort>=3&&comfort<=6) comfortRead='in the sweet spot for a first trip';
+  else if(comfort<3) comfortRead='very familiar — almost no stretch at all';
+  else comfortRead='ambitious for a first trip — a lot to absorb at once';
+
+  let factorRead;
+  if(factorCount<=3) factorRead='manageable for a first trip';
+  else if(factorCount<=5) factorRead='at the edge of what a first trip can hold';
+  else factorRead='a lot of new at once — worth knowing before you book';
+
+  let practicalRead;
+  if(yesCount>=4&&noCount===0) practicalRead='You have answers to the practical questions. The logistics are real and they hold up.';
+  else if(noCount>=2) practicalRead='Some of the practical pieces are not in place yet. That is not a reason to cancel — it is a list of small things to figure out before you go.';
+  else practicalRead='A few practical pieces still feel uncertain. The next step is filling in those specific gaps, not booking somewhere else.';
+
+  let gutRead,gutAccent,gutTitle;
+  if(gut==='excited') {
+    gutAccent=T;
+    gutTitle='Your gut says this one is right';
+    gutRead='Nervous but excited is the sweet spot. It means your destination matters enough to scare you and pulls you forward enough to keep going. That combination is what you want.';
+  } else if(gut==='terrified') {
+    gutAccent=COR;
+    gutTitle='Your gut says this one might be too much';
+    gutRead='Terrified and overwhelmed is information worth listening to. It does not mean you cannot do this trip — it might mean this is not the right first trip. The next module helps you work with that fear directly. Sit with the answer before you decide anything.';
+  } else {
+    gutAccent=G;
+    gutTitle='Your gut says this one might be too safe';
+    gutRead='Bored and unchallenged is honest. A destination that does not stretch you at all might still be a good first trip — proof of concept matters — but it is worth asking whether you would actually feel proud of yourself afterwards. Only you know.';
+  }
+
+  return {comfort,comfortRead,factorCount,factorRead,yesCount,noCount,practicalRead,gut,gutRead,gutAccent,gutTitle};
+}
+
+function App() {
+  const [screen,setScreen]=useState('import');
+  const [p4,setP4]=useState(null);
+  const [importErr,setImportErr]=useState(false);
+  const [comfort,setComfort]=useState(null);
+  const [factors,setFactors]=useState([]);
+  const [practical,setPractical]=useState({});
+  const [gut,setGut]=useState(null);
+
+  const goBack=()=>{
+    switch(screen){
+      case 'welcome-back': setScreen('import'); break;
+      case 'comfort': setScreen('welcome-back'); break;
+      case 'factors': setScreen('comfort'); break;
+      case 'practical': setScreen('factors'); break;
+      case 'gut': setScreen('practical'); break;
+      case 'result': setScreen('gut'); break;
+      case 'review': setScreen('result'); break;
+      default: break;
+    }
+  };
+
+  const handleImport=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    setImportErr(false);
+    const reader=new FileReader();
+    reader.onload=(evt)=>{
+      try{
+        const d=JSON.parse(evt.target.result);
+        if(!d.currentIdentity||!d.towardIdentity||!d.destination||!d.fearAlignment) throw new Error();
+        setP4(d); setScreen('welcome-back');
+      } catch{setImportErr(true);}
+    };
+    reader.readAsText(file);
+  };
+
+  const toggleFactor=(id)=>{
+    setFactors(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+  };
+
+  const setPracticalAnswer=(id,val)=>{
+    setPractical(prev=>({...prev,[id]:val}));
+  };
+
+  const practicalComplete=PRACTICAL.every(p=>practical[p.id]);
+  const result=screen==='result'||screen==='review'?buildResult({comfort,factors,practical,gut}):null;
+
+  const doExport=()=>{
+    const r=buildResult({comfort,factors,practical,gut});
+    const factorLabels=factors.map(id=>FACTORS.find(f=>f.id===id).label);
+    const d={
+      artifact:5,
+      module:'module3_decision_framework',
+      currentIdentity:p4.currentIdentity,
+      towardIdentity:p4.towardIdentity,
+      specificFear:p4.specificFear||null,
+      fearClassification:p4.fearClassification||null,
+      destination:p4.destination,
+      formulaGuidance:p4.formulaGuidance||null,
+      fearAlignment:p4.fearAlignment,
+      fearAlignmentLabel:p4.fearAlignmentLabel||null,
+      comfortRating:comfort,
+      comfortRead:r.comfortRead,
+      newFactors:factorLabels,
+      newFactorCount:factors.length,
+      factorRead:r.factorRead,
+      practicalAnswers:practical,
+      practicalRead:r.practicalRead,
+      gutCheck:gut,
+      gutCheckLabel:GUT.find(g=>g.id===gut).label,
+      savedAt:new Date().toISOString()
+    };
+    const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='Fearless_Roadmap_Progress5.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    setScreen('done');
+  };
+
+  if(screen==='import') return (
+    <div style={w}>
+      <Hdr sup="Stop Chickening Out — Module 3" title="Run it through the framework"/>
+      <Crd>
+        <p style={bs()}>You have a destination. You have a fear. Before you book, this session walks the destination through four honest checks — comfort level, how much new you are taking on, the practical questions, and your gut.</p>
+        <p style={bs(20)}>Upload your saved file from the previous session to continue.</p>
+        <label style={{display:'block',background:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:C,borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',textAlign:'center',marginBottom:importErr?8:0,boxShadow:'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>
+          <input type="file" accept=".json" onChange={handleImport} style={{display:'none'}}/>
+          <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><UploadIcon size={15}/> Upload Fearless_Roadmap_Progress4.json</span>
+        </label>
+        {importErr && <p style={{fontSize:13,color:'#c0392b',marginTop:8,lineHeight:1.6}}>That does not look like the right file. Make sure you are uploading Fearless_Roadmap_Progress4.json from the previous session.</p>}
+        <p style={{...hs,marginTop:16}}>No file yet? Complete the Module 3 Lesson 3 session first. Your file will be named Fearless_Roadmap_Progress4.json.</p>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='welcome-back') return (
+    <div style={w}>
+      <Hdr sup="Module 3 — Lesson 4" title="Welcome back"/>
+      <Crd onBack={goBack}>
+        <p style={bs()}>Your destination is on the table. Your fear is named. This session is the final check before you trust the choice — four short steps, then a clear read.</p>
+        <div style={{marginTop:16,marginBottom:4}}>
+          <InfoTag label="Your destination" value={p4.destination} accent={T}/>
+          {p4.specificFear && <InfoTag label="Your named fear" value={p4.specificFear} accent={COR}/>}
+        </div>
+        <p style={bs(4)}>Ready to walk it through the framework?</p>
+        <BtnP onClick={()=>setScreen('comfort')}>Begin the framework <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='comfort') return (
+    <div style={w}>
+      <Hdr sup="Step 1 of 4 — Comfort level" title="How familiar does this destination feel?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>On a scale from completely familiar to completely foreign, where does this destination land for you?</p>
+        <ComfortScale value={comfort} onChange={setComfort}/>
+        <BtnP onClick={()=>setScreen('factors')} disabled={!comfort}>Continue <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='factors') return (
+    <div style={w}>
+      <Hdr sup="Step 2 of 4 — New factors" title="How much new are you taking on?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Which of these will actually be new to you on this trip? Tick the ones that apply. For a first trip, 2 to 3 is the sweet spot.</p>
+        <FactorList selected={factors} onToggle={toggleFactor}/>
+        <BtnP onClick={()=>setScreen('practical')}>Continue <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='practical') return (
+    <div style={w}>
+      <Hdr sup="Step 3 of 4 — The practical questions" title="Can you answer these confidently?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>These are the five questions that separate a manageable trip from one that would overwhelm you. Answer honestly — not sure is a valid answer.</p>
+        {PRACTICAL.map(p=><YesNoCard key={p.id} question={p.q} value={practical[p.id]} onChange={(v)=>setPracticalAnswer(p.id,v)}/>)}
+        <BtnP onClick={()=>setScreen('gut')} disabled={!practicalComplete}>Continue <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='gut') return (
+    <div style={w}>
+      <Hdr sup="Step 4 of 4 — The gut check" title="How does it actually feel?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Forget the questions for a moment. When you think about actually being on this trip — which one of these is the truest read?</p>
+        {GUT.map(o=><GutCard key={o.id} option={o} selected={gut} onClick={setGut}/>)}
+        <BtnP onClick={()=>setScreen('result')} disabled={!gut}>See my framework result <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='result' && result) return (
+    <div style={w}>
+      <Hdr sup="Your framework result" title={result.gutTitle}/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>{result.gutRead}</p>
+
+        <div style={{borderTop:`1px solid ${BDT}`,paddingTop:16,marginBottom:16}}>
+          <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:TXS,marginBottom:10}}>What the rest of your answers suggest</div>
+
+          <div style={{background:BGS,borderLeft:`3px solid ${T}`,padding:'12px 14px',marginBottom:10}}>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>
+              <span style={{fontWeight:500,color:TXP}}>Comfort level {result.comfort}.</span> Your destination is {result.comfortRead}.
+            </div>
+          </div>
+
+          <div style={{background:BGS,borderLeft:`3px solid ${G}`,padding:'12px 14px',marginBottom:10}}>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>
+              <span style={{fontWeight:500,color:TXP}}>{result.factorCount} new factor{result.factorCount===1?'':'s'}.</span> That is {result.factorRead}.
+            </div>
+          </div>
+
+          <div style={{background:BGS,borderLeft:`3px solid ${COR}`,padding:'12px 14px',marginBottom:0}}>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>
+              <span style={{fontWeight:500,color:TXP}}>The practical check.</span> {result.practicalRead}
+            </div>
+          </div>
+        </div>
+
+        {gut==='terrified' && (
+          <NoteBox accent={COR} title="A note on the gut check">If your gut said terrified, take that seriously without treating it as the final word. Module 4 is where you work with that voice directly. Do not cancel anything yet — finish the next session first.</NoteBox>
+        )}
+        {gut==='bored' && (
+          <NoteBox accent={G} title="A note on the gut check">If your gut said bored, that is worth sitting with. A boring first trip can still teach you everything you need to know — but only if you would actually feel proud of yourself afterwards. If you would not, the destination is too safe.</NoteBox>
+        )}
+
+        <BtnP onClick={()=>setScreen('review')}>Add to my roadmap <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='review') return (
+    <div style={w}>
+      <Hdr sup="Layer 5 complete" title="Your roadmap keeps growing"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Everything you have built so far.</p>
+        <SavedBlk label="Right now" accent={T} prefix="I am the woman who" value={p4.currentIdentity}/>
+        <SavedBlk label="Becoming" accent={G} prefix="I am becoming the woman who" value={p4.towardIdentity}/>
+        {p4.specificFear && <SavedBlk label="Named fear" accent={COR} value={p4.specificFear}/>}
+        <SavedBlk label="My destination" accent={T} value={p4.destination}/>
+        {p4.fearAlignmentLabel && <SavedBlk label="Fear and destination alignment" accent={p4.fearAlignment==='manageable'?T:p4.fearAlignment==='confronts'?COR:G} value={p4.fearAlignmentLabel}/>}
+        <SavedBlk label="Comfort level" accent={T} value={`${comfort} out of 10 — ${result.comfortRead}`}/>
+        <SavedBlk label="New factors" accent={G} value={factors.length===0?'None — completely familiar territory':factors.map(id=>FACTORS.find(f=>f.id===id).label).join(', ')}/>
+        <SavedBlk label="Gut check" accent={result.gutAccent} value={GUT.find(g=>g.id===gut).label}/>
+        <p style={{fontSize:14,lineHeight:1.7,color:TXS,marginTop:16,marginBottom:0}}>Save your progress before you continue.</p>
+        <BtnG onClick={doExport}><DownloadIcon size={15}/> Save my progress — Fearless_Roadmap_Progress5.json</BtnG>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='done') return (
+    <div style={w}>
+      <Hdr dark sup="Progress saved" title="Layer 5 is in your roadmap"/>
+      <Crd>
+        <div style={{background:SUCC_BG,borderRadius:8,padding:'12px 14px',marginBottom:16,display:'flex',gap:10,alignItems:'flex-start'}}>
+          <CheckIcon size={16} style={{color:SUCC_TX,marginTop:2,flexShrink:0}}/>
+          <div>
+            <div style={{fontSize:13,fontWeight:500,color:SUCC_TX,marginBottom:3}}>Fearless_Roadmap_Progress5.json saved</div>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.6}}>Keep this file. You will need it for the next exercise in Module 4.</div>
+          </div>
+        </div>
+        <NoteBox title="Keep your file safe">Your progress is saved in Fearless_Roadmap_Progress5.json. When the next exercise moment arrives, you will be asked to upload it to continue building.</NoteBox>
+        <a href={NEXT} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
+          <BtnP>Continue in the course <ArrowRightIcon size={15}/></BtnP>
+        </a>
+      </Crd>
+    </div>
+  );
+
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

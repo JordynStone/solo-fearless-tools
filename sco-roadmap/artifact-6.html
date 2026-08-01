@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fearless Roadmap — Layer 6</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+      radial-gradient(520px 320px at 8% 4%, rgba(212,165,116,0.20), rgba(212,165,116,0) 70%),
+      radial-gradient(460px 300px at 94% 12%, rgba(232,168,124,0.18), rgba(232,168,124,0) 70%),
+      radial-gradient(600px 360px at 50% 104%, rgba(44,95,93,0.10), rgba(44,95,93,0) 72%),
+      #F8F6F0;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #3A3A3A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button, label, input, textarea { font-family: inherit; }
+  button:not(:disabled):hover, label[style*='cursor']:hover { transform: translateY(-2px); }
+  button:not(:disabled):active, label[style*='cursor']:active { transform: translateY(0); }
+  textarea:focus, input[type='text']:focus { border-color: #D4A574 !important; outline: none;
+    box-shadow: inset 0 2px 4px rgba(44,95,93,0.07), 0 0 0 3px rgba(212,165,116,0.18); }
+  #root { padding: 0 16px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+const T='#2C5F5D',TD='#1e4442',G='#D4A574',C='#F8F6F0',COR='#E8A87C';
+const BGP='#ffffff',BGS='#F8F6F0',TXP='#3A3A3A',TXS='#666666',TXT='#999999';
+const BDT='#E8E4DC',BDS='#CCBCB0',SUCC_BG='#EAF3DE',SUCC_TX='#3B6D11';
+const NEXT='https://www.skool.com/solo-and-fearless-3331/classroom/f50566b1?md=9080143ad0c84cd6b9f9f5613abe2147';
+
+// Inline SVG icons (replacing lucide-react)
+const Icon = ({ size = 16, children, style }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    style={style}>{children}</svg>
+);
+const UploadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
+const ArrowRightIcon = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
+const ArrowLeftIcon = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+const DownloadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
+const CheckIcon = (p) => <Icon {...p}><polyline points="20 6 9 17 4 12"/></Icon>;
+
+const VOICE_OPTIONS=[
+  {id:'stupid',text:'This is stupid and dangerous.'},
+  {id:'nottype',text:'You are not the type of person who does this.'},
+  {id:'terrible',text:'What if something terrible happens?'},
+  {id:'notready',text:'You should wait until you feel more ready.'},
+  {id:'crazy',text:'Everyone will think you are crazy.'},
+  {id:'cant',text:'You cannot handle this alone.'},
+  {id:'mistake',text:'This is a huge mistake.'},
+  {id:'custom',text:'Something else — in my own words'}
+];
+
+const GUIDED_Q=[
+  {id:'true',q:'What is one thing that is more true than what your voice says?',hint:'Not a slogan. Something you actually believe when you are calm.',label:'What is more true'},
+  {id:'evidence',q:'What is one piece of evidence from your own life that the voice is wrong?',hint:'Something you have done before that the voice would have said you could not do.',label:'Evidence from my life'},
+  {id:'sayinstead',q:'If a friend you love said this voice statement to herself, what would you say to her?',hint:'Whatever you would say to her, say it to yourself.',label:'What I would say to a friend'}
+];
+
+function Hdr({sup,title,dark}) {
+  return <div style={{background:dark?TD:T,borderRadius:'12px 12px 0 0',padding:'20px 24px'}}>
+    <div style={{fontSize:11,fontWeight:500,letterSpacing:'1.5px',textTransform:'uppercase',color:G,marginBottom:8}}>{sup}</div>
+    <h1 style={{color:C,fontSize:19,fontWeight:500,margin:0,lineHeight:1.4}}>{title}</h1>
+  </div>;
+}
+function Crd({children,onBack}) {
+  return <div style={{background:BGP,border:`0.5px solid ${BDT}`,borderRadius:'0 0 12px 12px',padding:'24px'}}>
+    {onBack && <button onClick={onBack} style={{background:'#FFFFFF',border:'1px solid rgba(212,165,116,0.55)',color:'#2C5F5D',fontSize:13,fontWeight:700,borderRadius:999,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:6,padding:'9px 18px',marginBottom:16,fontFamily:'inherit',boxShadow:'0 8px 22px rgba(212,165,116,0.30)',transition:'transform .2s, box-shadow .2s'}}><ArrowLeftIcon size={13}/> Back</button>}
+    {children}
+  </div>;
+}
+function BtnP({onClick,disabled,children}) {
+  return <button onClick={onClick} disabled={disabled} style={{background:disabled?BGS:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:disabled?TXT:C,border:disabled?`0.5px solid ${BDT}`:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:disabled?'not-allowed':'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:disabled?'none':'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function BtnG({onClick,children}) {
+  return <button onClick={onClick} style={{background:'linear-gradient(to bottom, #E0B98A, #D4A574)',color:'#142E2C',border:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:'0 8px 22px rgba(212,165,116,0.45)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function NoteBox({title,children,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||G}`,padding:'12px 14px',marginBottom:14}}>
+    {title && <div style={{fontSize:13,fontWeight:500,color:TXP,marginBottom:4}}>{title}</div>}
+    <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>{children}</div>
+  </div>;
+}
+function SavedBlk({label,accent,prefix,value}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent}`,padding:'14px 16px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:accent===T?T:accent===G?'#b8884a':'#a05010',marginBottom:8}}>{label}</div>
+    <p style={{margin:0,fontSize:15,lineHeight:1.7}}>
+      {prefix && <span style={{color:TXT,fontSize:13}}>{prefix} </span>}
+      <span style={{fontWeight:500}}>{value}</span>
+    </p>
+  </div>;
+}
+function InfoTag({label,value,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||BDS}`,padding:'10px 14px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:TXS,marginBottom:4}}>{label}</div>
+    <div style={{fontSize:15,fontWeight:500,lineHeight:1.5,color:TXP}}>{value}</div>
+  </div>;
+}
+
+const bs=(mb=14)=>({fontSize:15,lineHeight:1.8,color:TXS,marginBottom:mb});
+const w={padding:'24px 0',maxWidth:540,margin:'0 auto'};
+const hs={fontSize:12,color:TXT,marginTop:6,lineHeight:1.6,fontStyle:'italic'};
+const ta={width:'100%',minHeight:110,padding:'12px 14px',border:'1px solid rgba(44,95,93,0.2)',borderRadius:12,fontSize:14,lineHeight:1.6,color:TXP,fontFamily:'inherit',resize:'vertical',outline:'none',background:'#FFFFFF',boxSizing:'border-box',boxShadow:'inset 0 2px 4px rgba(44,95,93,0.07)'};
+
+function VoiceCard({option,selected,onClick}) {
+  const [hov,setHov]=useState(false);
+  const sel=selected===option.id;
+  return <div onClick={()=>onClick(option.id)} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+    style={{border:`1.5px solid ${sel?COR:hov?T:BDS}`,borderRadius:14,padding:'12px 16px',cursor:'pointer',marginBottom:8,
+      background:sel?BGS:hov?BGS:BGP,boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'all 0.15s, transform .2s, box-shadow .2s'}}>
+    <div style={{fontSize:14,color:TXP,lineHeight:1.5,fontStyle:option.id==='custom'?'normal':'italic',fontWeight:option.id==='custom'?500:400}}>
+      {option.id==='custom'?option.text:`"${option.text}"`}
+    </div>
+  </div>;
+}
+
+function App() {
+  const [screen,setScreen]=useState('import');
+  const [p5,setP5]=useState(null);
+  const [importErr,setImportErr]=useState(false);
+  const [voiceChoice,setVoiceChoice]=useState(null);
+  const [customVoice,setCustomVoice]=useState('');
+  const [path,setPath]=useState(null);
+  const [response,setResponse]=useState('');
+  const [guided,setGuided]=useState({true:'',evidence:'',sayinstead:''});
+
+  const goBack=()=>{
+    switch(screen){
+      case 'welcome-back': setScreen('import'); break;
+      case 'voice': setScreen('welcome-back'); break;
+      case 'response-path': setScreen('voice'); break;
+      case 'response-blank': setScreen('response-path'); break;
+      case 'response-guided': setScreen('response-path'); break;
+      case 'review':
+        if(path==='blank') setScreen('response-blank');
+        else setScreen('response-guided');
+        break;
+      default: break;
+    }
+  };
+
+  const handleImport=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    setImportErr(false);
+    const reader=new FileReader();
+    reader.onload=(evt)=>{
+      try{
+        const d=JSON.parse(evt.target.result);
+        if(!d.currentIdentity||!d.towardIdentity||!d.destination||!d.gutCheck) throw new Error();
+        setP5(d); setScreen('welcome-back');
+      } catch{setImportErr(true);}
+    };
+    reader.readAsText(file);
+  };
+
+  const getVoiceText=()=>{
+    if(voiceChoice==='custom') return customVoice.trim();
+    const o=VOICE_OPTIONS.find(v=>v.id===voiceChoice);
+    return o?o.text:'';
+  };
+
+  const getResponseText=()=>{
+    if(path==='blank') return response.trim();
+    const parts=[];
+    GUIDED_Q.forEach(q=>{
+      if(guided[q.id].trim()) parts.push(`${q.label}: ${guided[q.id].trim()}`);
+    });
+    return parts.join(' | ');
+  };
+
+  const getFilledGuided=()=>GUIDED_Q.filter(q=>guided[q.id].trim().length>0);
+
+  const voiceReady=voiceChoice && (voiceChoice!=='custom' || customVoice.trim().length>0);
+  const blankReady=response.trim().length>0;
+  const guidedReady=Object.values(guided).filter(v=>v.trim().length>0).length>=1;
+
+  const doExport=()=>{
+    const d={
+      artifact:6,
+      module:'module4_voice_in_your_head',
+      currentIdentity:p5.currentIdentity,
+      towardIdentity:p5.towardIdentity,
+      specificFear:p5.specificFear||null,
+      fearClassification:p5.fearClassification||null,
+      destination:p5.destination,
+      formulaGuidance:p5.formulaGuidance||null,
+      fearAlignment:p5.fearAlignment||null,
+      fearAlignmentLabel:p5.fearAlignmentLabel||null,
+      comfortRating:p5.comfortRating||null,
+      newFactors:p5.newFactors||null,
+      practicalAnswers:p5.practicalAnswers||null,
+      gutCheck:p5.gutCheck,
+      gutCheckLabel:p5.gutCheckLabel||null,
+      voiceStatement:getVoiceText(),
+      voiceResponsePath:path,
+      voiceResponse:getResponseText(),
+      voiceResponseGuided:path==='guided'?guided:null,
+      savedAt:new Date().toISOString()
+    };
+    const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='Fearless_Roadmap_Progress6.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    setScreen('done');
+  };
+
+  if(screen==='import') return (
+    <div style={w}>
+      <Hdr sup="Stop Chickening Out — Module 4" title="The voice in your head"/>
+      <Crd>
+        <p style={bs()}>That voice in your head is not trying to protect you. It is trying to keep you exactly where you are. In this session you will hear what it says, and write your own response — in your own words.</p>
+        <p style={bs(20)}>Upload your saved file from the previous session to continue.</p>
+        <label style={{display:'block',background:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:C,borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',textAlign:'center',marginBottom:importErr?8:0,boxShadow:'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>
+          <input type="file" accept=".json" onChange={handleImport} style={{display:'none'}}/>
+          <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><UploadIcon size={15}/> Upload Fearless_Roadmap_Progress5.json</span>
+        </label>
+        {importErr && <p style={{fontSize:13,color:'#c0392b',marginTop:8,lineHeight:1.6}}>That does not look like the right file. Make sure you are uploading Fearless_Roadmap_Progress5.json from the previous session.</p>}
+        <p style={{...hs,marginTop:16}}>No file yet? Complete the Module 3 Lesson 4 session first. Your file will be named Fearless_Roadmap_Progress5.json.</p>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='welcome-back') return (
+    <div style={w}>
+      <Hdr sup="Module 4 — Lesson 4" title="Welcome back"/>
+      <Crd onBack={goBack}>
+        <p style={bs()}>Your roadmap has a destination. It has a fear. It has the framework check. Now there is one more piece — the voice that shows up at the booking moment and tries to talk you out of it.</p>
+        <div style={{marginTop:16,marginBottom:4}}>
+          <InfoTag label="Your destination" value={p5.destination} accent={T}/>
+          {p5.specificFear && <InfoTag label="Your named fear" value={p5.specificFear} accent={COR}/>}
+        </div>
+        <p style={bs(4)}>Time to hear the voice and answer it.</p>
+        <BtnP onClick={()=>setScreen('voice')}>Hear the voice <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='voice') return (
+    <div style={w}>
+      <Hdr sup="Step 1 of 2 — Hear it" title="What does your voice say most?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>When you are about to book — or when you are even thinking about booking — what is the line your voice goes back to most often? Pick the one that sounds most like yours, or write your own.</p>
+        {VOICE_OPTIONS.map(o=><VoiceCard key={o.id} option={o} selected={voiceChoice} onClick={setVoiceChoice}/>)}
+        {voiceChoice==='custom' && (
+          <div style={{marginTop:6,marginBottom:4}}>
+            <textarea
+              value={customVoice}
+              onChange={(e)=>setCustomVoice(e.target.value)}
+              placeholder="What does your voice actually say? Write it the way you hear it — your words, not a polished version."
+              style={ta}/>
+          </div>
+        )}
+        <BtnP onClick={()=>setScreen('response-path')} disabled={!voiceReady}>Now answer it <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='response-path') return (
+    <div style={w}>
+      <Hdr sup="Step 2 of 2 — Answer it" title="How do you want to write your response?"/>
+      <Crd onBack={goBack}>
+        <p style={bs(14)}>Your voice just said:</p>
+        <div style={{background:BGS,borderLeft:`3px solid ${COR}`,padding:'14px 16px',marginBottom:20}}>
+          <div style={{fontSize:15,color:TXP,lineHeight:1.6,fontStyle:'italic'}}>"{getVoiceText()}"</div>
+        </div>
+        <p style={bs(20)}>Now write back. You can either start with a blank space, or have a few questions guide you. Pick whichever feels easier right now.</p>
+        <div onClick={()=>{setPath('blank');setScreen('response-blank');}} style={{border:`1.5px solid ${BDS}`,borderRadius:14,padding:'16px',cursor:'pointer',marginBottom:10,background:'#FFFFFF',boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'transform .2s, box-shadow .2s'}}>
+          <div style={{fontWeight:500,fontSize:14,marginBottom:4,color:TXP}}>Blank space</div>
+          <div style={{fontSize:12,color:TXS,lineHeight:1.6}}>I already know what I want to say back. Just give me room to write it.</div>
+        </div>
+        <div onClick={()=>{setPath('guided');setScreen('response-guided');}} style={{border:`1.5px solid ${BDS}`,borderRadius:14,padding:'16px',cursor:'pointer',marginBottom:10,background:'#FFFFFF',boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'transform .2s, box-shadow .2s'}}>
+          <div style={{fontWeight:500,fontSize:14,marginBottom:4,color:TXP}}>Guided questions</div>
+          <div style={{fontSize:12,color:TXS,lineHeight:1.6}}>Help me find my way in. A few short questions, and my answers become my response.</div>
+        </div>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='response-blank') return (
+    <div style={w}>
+      <Hdr sup="Your response" title="In your own words"/>
+      <Crd onBack={goBack}>
+        <p style={bs(14)}>Your voice said:</p>
+        <div style={{background:BGS,borderLeft:`3px solid ${COR}`,padding:'14px 16px',marginBottom:16}}>
+          <div style={{fontSize:14,color:TXP,lineHeight:1.6,fontStyle:'italic'}}>"{getVoiceText()}"</div>
+        </div>
+        <p style={bs(14)}>Write what you want to say back. Any length is fine. Honest beats polished.</p>
+        <textarea
+          value={response}
+          onChange={(e)=>setResponse(e.target.value)}
+          placeholder="Write your response here…"
+          style={{...ta,minHeight:160}}/>
+        <BtnP onClick={()=>setScreen('review')} disabled={!blankReady}>Add to my roadmap <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='response-guided') return (
+    <div style={w}>
+      <Hdr sup="Your response" title="A few questions to find your words"/>
+      <Crd onBack={goBack}>
+        <p style={bs(14)}>Your voice said:</p>
+        <div style={{background:BGS,borderLeft:`3px solid ${COR}`,padding:'14px 16px',marginBottom:20}}>
+          <div style={{fontSize:14,color:TXP,lineHeight:1.6,fontStyle:'italic'}}>"{getVoiceText()}"</div>
+        </div>
+        <p style={bs(14)}>Answer whichever of these speak to you. You do not have to answer all three.</p>
+        {GUIDED_Q.map(q=>(
+          <div key={q.id} style={{marginBottom:18}}>
+            <div style={{fontSize:14,color:TXP,marginBottom:4,fontWeight:500,lineHeight:1.5}}>{q.q}</div>
+            <div style={{fontSize:12,color:TXT,marginBottom:8,lineHeight:1.6,fontStyle:'italic'}}>{q.hint}</div>
+            <textarea
+              value={guided[q.id]}
+              onChange={(e)=>setGuided(prev=>({...prev,[q.id]:e.target.value}))}
+              placeholder="Your answer…"
+              style={{...ta,minHeight:80}}/>
+          </div>
+        ))}
+        <BtnP onClick={()=>setScreen('review')} disabled={!guidedReady}>Add to my roadmap <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='review') return (
+    <div style={w}>
+      <Hdr sup="Layer 6 complete" title="Your roadmap keeps growing"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Everything you have built so far.</p>
+        <SavedBlk label="Right now" accent={T} prefix="I am the woman who" value={p5.currentIdentity}/>
+        <SavedBlk label="Becoming" accent={G} prefix="I am becoming the woman who" value={p5.towardIdentity}/>
+        {p5.specificFear && <SavedBlk label="Named fear" accent={COR} value={p5.specificFear}/>}
+        <SavedBlk label="My destination" accent={T} value={p5.destination}/>
+        {p5.gutCheckLabel && <SavedBlk label="Gut check" accent={p5.gutCheck==='excited'?T:p5.gutCheck==='terrified'?COR:G} value={p5.gutCheckLabel}/>}
+
+        <div style={{borderTop:`1px solid ${BDT}`,paddingTop:14,marginTop:4,marginBottom:10}}>
+          <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:TXS,marginBottom:10}}>New in this session</div>
+        </div>
+
+        <div style={{background:BGS,borderLeft:`3px solid ${COR}`,padding:'14px 16px',marginBottom:10}}>
+          <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:'#a05010',marginBottom:8}}>What my voice says</div>
+          <p style={{margin:0,fontSize:15,lineHeight:1.7,fontStyle:'italic'}}>"{getVoiceText()}"</p>
+        </div>
+
+        <div style={{background:BGS,borderLeft:`3px solid ${T}`,padding:'14px 16px',marginBottom:10}}>
+          <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:T,marginBottom:8}}>What I say back</div>
+          {path==='blank' ? (
+            <p style={{margin:0,fontSize:15,lineHeight:1.7,fontWeight:500}}>{response.trim()}</p>
+          ) : (
+            <div>
+              {getFilledGuided().map((q,i)=>(
+                <div key={q.id} style={{marginTop:i===0?0:14}}>
+                  <div style={{fontSize:11,fontWeight:500,color:TXS,marginBottom:4,fontStyle:'italic'}}>{q.label}</div>
+                  <p style={{margin:0,fontSize:15,lineHeight:1.7,fontWeight:500}}>{guided[q.id].trim()}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <p style={{fontSize:14,lineHeight:1.7,color:TXS,marginTop:16,marginBottom:0}}>Save your progress before you continue.</p>
+        <BtnG onClick={doExport}><DownloadIcon size={15}/> Save my progress — Fearless_Roadmap_Progress6.json</BtnG>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='done') return (
+    <div style={w}>
+      <Hdr dark sup="Progress saved" title="Layer 6 is in your roadmap"/>
+      <Crd>
+        <div style={{background:SUCC_BG,borderRadius:8,padding:'12px 14px',marginBottom:16,display:'flex',gap:10,alignItems:'flex-start'}}>
+          <CheckIcon size={16} style={{color:SUCC_TX,marginTop:2,flexShrink:0}}/>
+          <div>
+            <div style={{fontSize:13,fontWeight:500,color:SUCC_TX,marginBottom:3}}>Fearless_Roadmap_Progress6.json saved</div>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.6}}>Keep this file. You will need it for the next exercise in Module 5.</div>
+          </div>
+        </div>
+        <NoteBox title="Keep your file safe">Your progress is saved in Fearless_Roadmap_Progress6.json. When the next exercise moment arrives, you will be asked to upload it to continue building.</NoteBox>
+        <a href={NEXT} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
+          <BtnP>Continue in the course <ArrowRightIcon size={15}/></BtnP>
+        </a>
+      </Crd>
+    </div>
+  );
+
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

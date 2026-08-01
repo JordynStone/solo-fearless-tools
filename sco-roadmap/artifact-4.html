@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fearless Roadmap — Layer 4</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+      radial-gradient(520px 320px at 8% 4%, rgba(212,165,116,0.20), rgba(212,165,116,0) 70%),
+      radial-gradient(460px 300px at 94% 12%, rgba(232,168,124,0.18), rgba(232,168,124,0) 70%),
+      radial-gradient(600px 360px at 50% 104%, rgba(44,95,93,0.10), rgba(44,95,93,0) 72%),
+      #F8F6F0;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #3A3A3A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button, label, input, textarea { font-family: inherit; }
+  button:not(:disabled):hover, label[style*='cursor']:hover { transform: translateY(-2px); }
+  button:not(:disabled):active, label[style*='cursor']:active { transform: translateY(0); }
+  textarea:focus, input[type='text']:focus { border-color: #D4A574 !important; outline: none;
+    box-shadow: inset 0 2px 4px rgba(44,95,93,0.07), 0 0 0 3px rgba(212,165,116,0.18); }
+  #root { padding: 0 16px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+const T='#2C5F5D',TD='#1e4442',G='#D4A574',C='#F8F6F0',COR='#E8A87C';
+const BGP='#ffffff',BGS='#F8F6F0',TXP='#3A3A3A',TXS='#666666',TXT='#999999';
+const BDT='#E8E4DC',BDS='#CCBCB0',SUCC_BG='#EAF3DE',SUCC_TX='#3B6D11';
+const NEXT='https://www.skool.com/solo-and-fearless-3331/classroom/f50566b1?md=894ba4b26c8a4285a64263915941d0af';
+
+// Inline SVG icons (replacing lucide-react)
+const Icon = ({ size = 16, children, style }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    style={style}>{children}</svg>
+);
+const UploadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
+const ArrowRightIcon = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
+const ArrowLeftIcon = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+const DownloadIcon = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
+const CheckIcon = (p) => <Icon {...p}><polyline points="20 6 9 17 4 12"/></Icon>;
+
+const RESULTS={
+  manageable:{
+    sup:'Fear and destination are aligned',
+    title:'Your destination keeps your fear manageable',
+    text:'That is the ideal starting point. Your first trip is not about conquering every fear at once. It is about proving to yourself that you can do this. Choosing a destination that keeps your biggest fear manageable is strategic, not avoidant. You are setting yourself up to succeed.',
+    label:'Destination and fear are well matched',
+    accent:T
+  },
+  confronts:{
+    sup:'Your destination confronts this fear directly',
+    title:'Your destination puts you right in front of this fear',
+    text:'That is worth knowing before you book. Your destination does not sidestep the thing that has been stopping you — it asks you to face it directly. That can work. The next lesson gives you specific tools to prepare for exactly this. But it is also worth sitting with honestly: is this the first trip, or is this the trip after the first trip? Only you know the real answer.',
+    label:'Destination confronts the named fear directly',
+    accent:COR
+  },
+  mixed:{
+    sup:'Some alignment, some tension',
+    title:'Your destination has some tension with your fear',
+    text:'That is honest. Most destinations do. The question is not whether the tension exists — it does. The question is whether it is the kind you can prepare for, or the kind that would stop you from booking. The next lesson helps you figure out exactly which one it is.',
+    label:'Some tension between destination and fear',
+    accent:G
+  }
+};
+
+const OPTIONS=[
+  {id:'manageable',label:'My destination helps me keep this fear manageable for the first trip',desc:'The fear exists, but my destination does not put it right in front of me.'},
+  {id:'confronts',label:'My destination puts me right in the path of this fear',desc:'My destination actually triggers the exact thing that has been stopping me.'},
+  {id:'mixed',label:'It is somewhere in between',desc:'There is some connection, some tension. Not clean either way.'}
+];
+
+function Hdr({sup,title,dark}) {
+  return <div style={{background:dark?TD:T,borderRadius:'12px 12px 0 0',padding:'20px 24px'}}>
+    <div style={{fontSize:11,fontWeight:500,letterSpacing:'1.5px',textTransform:'uppercase',color:G,marginBottom:8}}>{sup}</div>
+    <h1 style={{color:C,fontSize:19,fontWeight:500,margin:0,lineHeight:1.4}}>{title}</h1>
+  </div>;
+}
+function Crd({children,onBack}) {
+  return <div style={{background:BGP,border:`0.5px solid ${BDT}`,borderRadius:'0 0 12px 12px',padding:'24px'}}>
+    {onBack && <button onClick={onBack} style={{background:'#FFFFFF',border:'1px solid rgba(212,165,116,0.55)',color:'#2C5F5D',fontSize:13,fontWeight:700,borderRadius:999,cursor:'pointer',display:'inline-flex',alignItems:'center',gap:6,padding:'9px 18px',marginBottom:16,fontFamily:'inherit',boxShadow:'0 8px 22px rgba(212,165,116,0.30)',transition:'transform .2s, box-shadow .2s'}}><ArrowLeftIcon size={13}/> Back</button>}
+    {children}
+  </div>;
+}
+function BtnP({onClick,disabled,children}) {
+  return <button onClick={onClick} disabled={disabled} style={{background:disabled?BGS:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:disabled?TXT:C,border:disabled?`0.5px solid ${BDT}`:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:disabled?'not-allowed':'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:disabled?'none':'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function BtnG({onClick,children}) {
+  return <button onClick={onClick} style={{background:'linear-gradient(to bottom, #E0B98A, #D4A574)',color:'#142E2C',border:'none',borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',width:'100%',marginTop:16,display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:'0 8px 22px rgba(212,165,116,0.45)',transition:'transform .2s, box-shadow .2s'}}>{children}</button>;
+}
+function NoteBox({title,children,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||G}`,padding:'12px 14px',marginBottom:14}}>
+    {title && <div style={{fontSize:13,fontWeight:500,color:TXP,marginBottom:4}}>{title}</div>}
+    <div style={{fontSize:13,color:TXS,lineHeight:1.7}}>{children}</div>
+  </div>;
+}
+function SavedBlk({label,accent,prefix,value}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent}`,padding:'14px 16px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:accent===T?T:accent===G?'#b8884a':'#a05010',marginBottom:8}}>{label}</div>
+    <p style={{margin:0,fontSize:15,lineHeight:1.7}}>
+      {prefix && <span style={{color:TXT,fontSize:13}}>{prefix} </span>}
+      <span style={{fontWeight:500}}>{value}</span>
+    </p>
+  </div>;
+}
+function InfoTag({label,value,accent}) {
+  return <div style={{background:BGS,borderLeft:`3px solid ${accent||BDS}`,padding:'10px 14px',marginBottom:10}}>
+    <div style={{fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'1.5px',color:TXS,marginBottom:4}}>{label}</div>
+    <div style={{fontSize:15,fontWeight:500,lineHeight:1.5,color:TXP}}>{value}</div>
+  </div>;
+}
+function QCard({option,onClick}) {
+  const [hov,setHov]=useState(false);
+  return <div onClick={()=>onClick(option.id)} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+    style={{border:`1.5px solid ${hov?T:BDS}`,borderRadius:14,padding:'14px 16px',cursor:'pointer',marginBottom:10,background:hov?BGS:BGP,boxShadow:'0 10px 30px rgba(44,95,93,0.09)',transition:'border-color 0.15s, background 0.15s, transform .2s, box-shadow .2s'}}>
+    <div style={{fontWeight:500,fontSize:14,marginBottom:4,color:TXP}}>{option.label}</div>
+    <div style={{fontSize:12,color:TXS,lineHeight:1.6}}>{option.desc}</div>
+  </div>;
+}
+
+const bs=(mb=14)=>({fontSize:15,lineHeight:1.8,color:TXS,marginBottom:mb});
+const w={padding:'24px 0',maxWidth:540,margin:'0 auto'};
+const hs={fontSize:12,color:TXT,marginTop:6,lineHeight:1.6,fontStyle:'italic'};
+
+function App() {
+  const [screen,setScreen]=useState('import');
+  const [p3,setP3]=useState(null);
+  const [importErr,setImportErr]=useState(false);
+  const [alignment,setAlignment]=useState(null);
+
+  const goBack=()=>{
+    switch(screen){
+      case 'welcome-back': setScreen('import'); break;
+      case 'compass': setScreen('welcome-back'); break;
+      case 'result': setScreen('compass'); break;
+      case 'review': setScreen('result'); break;
+      default: break;
+    }
+  };
+
+  const handleImport=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    setImportErr(false);
+    const reader=new FileReader();
+    reader.onload=(evt)=>{
+      try{
+        const d=JSON.parse(evt.target.result);
+        if(!d.currentIdentity||!d.towardIdentity||!d.destination) throw new Error();
+        setP3(d); setScreen('welcome-back');
+      } catch{setImportErr(true);}
+    };
+    reader.readAsText(file);
+  };
+
+  const doExport=()=>{
+    const r=RESULTS[alignment];
+    const d={artifact:4,module:'module3_fear_matching',currentIdentity:p3.currentIdentity,towardIdentity:p3.towardIdentity,specificFear:p3.specificFear||null,fearClassification:p3.fearClassification||null,destination:p3.destination,formulaGuidance:p3.formulaGuidance||null,fearAlignment:alignment,fearAlignmentLabel:r.label,savedAt:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='Fearless_Roadmap_Progress4.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    setScreen('done');
+  };
+
+  if(screen==='import') return (
+    <div style={w}>
+      <Hdr sup="Stop Chickening Out — Module 3" title="Choose based on your fears"/>
+      <Crd>
+        <p style={bs()}>Your fear is not the obstacle. It is the compass. In this session your named fear and your chosen destination meet for the first time, and you will look at whether they point in the same direction.</p>
+        <p style={bs(20)}>Upload your saved file from the previous session to continue.</p>
+        <label style={{display:'block',background:'linear-gradient(to bottom, #37716E, #2C5F5D)',color:C,borderRadius:999,padding:'15px 26px',fontSize:14,fontWeight:700,cursor:'pointer',textAlign:'center',marginBottom:importErr?8:0,boxShadow:'0 8px 22px rgba(44,95,93,0.32)',transition:'transform .2s, box-shadow .2s'}}>
+          <input type="file" accept=".json" onChange={handleImport} style={{display:'none'}}/>
+          <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><UploadIcon size={15}/> Upload Fearless_Roadmap_Progress3.json</span>
+        </label>
+        {importErr && <p style={{fontSize:13,color:'#c0392b',marginTop:8,lineHeight:1.6}}>That does not look like the right file. Make sure you are uploading Fearless_Roadmap_Progress3.json from the previous session.</p>}
+        <p style={{...hs,marginTop:16}}>No file yet? Complete the Module 3 Lesson 2 session first. Your file will be named Fearless_Roadmap_Progress3.json.</p>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='welcome-back') return (
+    <div style={w}>
+      <Hdr sup="Module 3 — Lesson 3" title="Welcome back"/>
+      <Crd onBack={goBack}>
+        <p style={bs()}>Your roadmap brought two important things together. Your fear and your destination. In this session you will look at them side by side for the first time and ask one honest question.</p>
+        <div style={{marginTop:16,marginBottom:4}}>
+          <InfoTag label="Your named fear" value={p3.specificFear||'Not yet named'} accent={COR}/>
+          <InfoTag label="Your chosen destination" value={p3.destination} accent={T}/>
+        </div>
+        <p style={bs(4)}>Do these two point in the same direction or are they pulling against each other?</p>
+        <BtnP onClick={()=>setScreen('compass')}>Look at them together <ArrowRightIcon size={15}/></BtnP>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='compass') return (
+    <div style={w}>
+      <Hdr sup="Layer 4 — Fear matching" title="Your fear is the compass"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Read your fear and your destination together. Then choose the option that feels most honest. There is no right answer — only an accurate one.</p>
+        <InfoTag label="Your fear" value={p3.specificFear||'Not yet named'} accent={COR}/>
+        <InfoTag label="Your destination" value={p3.destination} accent={T}/>
+        <p style={{fontSize:13,fontWeight:500,color:TXP,margin:'16px 0 12px'}}>Looking at these together — which feels most true?</p>
+        {OPTIONS.map(o=><QCard key={o.id} option={o} onClick={(ans)=>{setAlignment(ans);setScreen('result');}}/>)}
+      </Crd>
+    </div>
+  );
+
+  if(screen==='result' && alignment) {
+    const r=RESULTS[alignment];
+    return (
+      <div style={w}>
+        <Hdr sup={r.sup} title={r.title}/>
+        <Crd onBack={goBack}>
+          <div style={{marginBottom:16}}>
+            <InfoTag label="Your fear" value={p3.specificFear||'Not yet named'} accent={COR}/>
+            <InfoTag label="Your destination" value={p3.destination} accent={T}/>
+          </div>
+          <p style={bs(20)}>{r.text}</p>
+          {alignment==='confronts' && (
+            <NoteBox accent={BDS} title="Something worth sitting with">The next lesson gives you a framework for preparing for exactly this. Go through it with your specific fear in mind before you decide anything.</NoteBox>
+          )}
+          <BtnP onClick={()=>setScreen('review')}>Add to my roadmap <ArrowRightIcon size={15}/></BtnP>
+        </Crd>
+      </div>
+    );
+  }
+
+  if(screen==='review') return (
+    <div style={w}>
+      <Hdr sup="Layer 4 complete" title="Your roadmap keeps growing"/>
+      <Crd onBack={goBack}>
+        <p style={bs(20)}>Everything you have built so far.</p>
+        <SavedBlk label="Right now" accent={T} prefix="I am the woman who" value={p3.currentIdentity}/>
+        <SavedBlk label="Becoming" accent={G} prefix="I am becoming the woman who" value={p3.towardIdentity}/>
+        {p3.specificFear && <SavedBlk label="Named fear" accent={COR} value={p3.specificFear}/>}
+        {p3.fearClassification && <SavedBlk label="Fear classification" accent={p3.fearClassification==='real'?T:p3.fearClassification==='unsure'?G:COR}
+          value={p3.fearClassification==='real'?'Real concern — research tools in the next lessons':p3.fearClassification==='unsure'?'Complex — working through it as the course continues':'Fear wearing a costume — a pattern to name, not a problem to solve'}/>}
+        <SavedBlk label="My destination" accent={T} value={p3.destination}/>
+        {p3.formulaGuidance && <SavedBlk label="Formula result" accent={p3.formulaGuidance==='strong'?T:p3.formulaGuidance==='moderate'?G:COR}
+          value={p3.formulaGuidance==='strong'?'Well-suited for a first solo trip':p3.formulaGuidance==='moderate'?'Could work — going in prepared makes the difference':'Building toward this — a different first destination gets you there faster'}/>}
+        <SavedBlk label="Fear and destination alignment" accent={RESULTS[alignment].accent} value={RESULTS[alignment].label}/>
+        <p style={{fontSize:14,lineHeight:1.7,color:TXS,marginTop:16,marginBottom:0}}>Save your progress before you continue.</p>
+        <BtnG onClick={doExport}><DownloadIcon size={15}/> Save my progress — Fearless_Roadmap_Progress4.json</BtnG>
+      </Crd>
+    </div>
+  );
+
+  if(screen==='done') return (
+    <div style={w}>
+      <Hdr dark sup="Progress saved" title="Layer 4 is in your roadmap"/>
+      <Crd>
+        <div style={{background:SUCC_BG,borderRadius:8,padding:'12px 14px',marginBottom:16,display:'flex',gap:10,alignItems:'flex-start'}}>
+          <CheckIcon size={16} style={{color:SUCC_TX,marginTop:2,flexShrink:0}}/>
+          <div>
+            <div style={{fontSize:13,fontWeight:500,color:SUCC_TX,marginBottom:3}}>Fearless_Roadmap_Progress4.json saved</div>
+            <div style={{fontSize:13,color:TXS,lineHeight:1.6}}>Keep this file. You will need it for the next exercise later in the course.</div>
+          </div>
+        </div>
+        <NoteBox title="Keep your file safe">Your progress is saved in Fearless_Roadmap_Progress4.json. When the next exercise moment arrives, you will be asked to upload it to continue building.</NoteBox>
+        <a href={NEXT} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
+          <BtnP>Continue in the course <ArrowRightIcon size={15}/></BtnP>
+        </a>
+      </Crd>
+    </div>
+  );
+
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solo & Fearless | Find Your Starting Point</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Re-skinned 31 July 2026 to the Solo & Fearless language: the same
+   Montserrat as the website and the platform, the lit teal from the login
+   screen, pill buttons with their own glow, and surfaces that lift.
+   Only the look changed. Every word and every interaction is untouched. */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #2C5F5D;
+  --text: #F8F6F0;
+  --gold: #D4A574;
+  --gold-dark: #b8864e;
+  --coral: #E8A87C;
+  --charcoal: #3A3A3A;
+  --muted: rgba(248,246,240,0.45);
+  --opt-border: rgba(248,246,240,0.16);
+  --opt-bg: rgba(248,246,240,0.06);
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The dark teal is never flat: it catches gold and green over a gradient,
+   the same light as the login screen. */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 100px;
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 520px at 18% -8%, rgba(212,165,116,0.30), rgba(212,165,116,0) 70%),
+    radial-gradient(760px 460px at 86% 108%, rgba(63,163,122,0.24), rgba(63,163,122,0) 70%),
+    linear-gradient(160deg, #1B403C 0%, #142E2C 58%, #0E211F 100%);
+  background-attachment: fixed;
+}
+
+.prog-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(248,246,240,0.12);
+  z-index: 100;
+  display: none;
+}
+
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--coral));
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.prog-pct {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  display: none;
+  z-index: 101;
+}
+
+.top-right {
+  position: fixed;
+  top: 14px;
+  right: 20px;
+  display: none;
+  z-index: 200;
+}
+
+.btn-restart {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s;
+  min-height: 32px;
+}
+.btn-restart:hover { color: var(--text); }
+
+.card {
+  max-width: 540px;
+  width: 100%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+.card.hidden { opacity: 0; transform: translateY(10px); }
+
+.lbl {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: clamp(23px, 4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.32;
+  margin-bottom: 34px;
+}
+
+.result-name {
+  font-size: clamp(26px, 4.4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--gold);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--coral));
+  margin-bottom: 30px;
+}
+
+.center { text-align: center; }
+.divider.center { margin-left: auto; margin-right: auto; }
+
+.intro-text {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(248,246,240,0.82);
+  line-height: 1.9;
+  margin-bottom: 48px;
+}
+
+/* The platform's gold button: a gradient with its own glow, lifting when
+   you reach for it. */
+.btn-start {
+  background: linear-gradient(to bottom, #E0B98A, var(--gold));
+  color: #142E2C;
+  border: none;
+  padding: 16px 52px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(212,165,116,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+  margin: 0 auto;
+  min-height: 52px;
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(212,165,116,0.55); }
+.btn-start:active { transform: translateY(0); }
+
+.btn-back {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+  min-height: 40px;
+}
+.btn-back:hover { color: var(--gold); }
+.btn-back svg {
+  width: 13px; height: 13px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* An answer she picks: it lifts when she touches it and takes a gold
+   edge, the same as every row she picks inside the platform. */
+.option {
+  background: var(--opt-bg);
+  border: 1px solid var(--opt-border);
+  border-left: 3px solid transparent;
+  color: var(--text);
+  padding: 17px 22px;
+  width: 100%;
+  text-align: left;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s;
+  margin-bottom: 11px;
+  display: block;
+  min-height: 56px;
+}
+.option:hover {
+  background: rgba(248,246,240,0.10);
+  border-left-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(10,26,25,0.38);
+}
+.option:active { transform: translateY(-1px); }
+
+.result-body p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(248,246,240,0.85);
+  margin-bottom: 18px;
+}
+.result-body p.italic { font-style: italic; }
+
+.bq {
+  border-left: 3px solid var(--gold);
+  background: rgba(248,246,240,0.05);
+  border-radius: 0 14px 14px 0;
+  padding: 16px 22px;
+  margin: 30px 0;
+}
+.bq p {
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: rgba(248,246,240,0.78);
+}
+
+.btn-result {
+  background: linear-gradient(to bottom, #E0B98A, var(--gold));
+  color: #142E2C;
+  border: none;
+  padding: 18px 28px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(212,165,116,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+  width: 100%;
+  margin-top: 32px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.4;
+  min-height: 56px;
+}
+.btn-result:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(212,165,116,0.55); }
+.btn-result:active { transform: translateY(0); }
+
+.btn-again {
+  background: none;
+  border: 1px solid rgba(212,165,116,0.4);
+  color: var(--muted);
+  padding: 14px 28px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all 0.2s;
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  text-align: center;
+  min-height: 48px;
+}
+.btn-again:hover { color: #142E2C; background: var(--gold); border-color: var(--gold); }
+
+footer {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 27px; }
+  h2 { font-size: 22px; }
+  .intro-text { font-size: 14.5px; }
+  .result-name { font-size: 25px; }
+  body { padding: 72px 18px 96px; }
+  .option { padding: 15px 18px; font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="prog-wrap" id="pw"><div class="prog-fill" id="pf"></div></div>
+<div class="prog-pct" id="pp"></div>
+<div class="top-right" id="tr"><button class="btn-restart" onclick="restart()">Start over</button></div>
+<div class="card" id="card"></div>
+<footer id="ft">Solo &amp; Fearless</footer>
+
+<script>
+var branch = null;
+var TOTAL = 5;
+
+var qA = [
+  {
+    q: "When you imagine actually clicking purchase, what happens?",
+    opts: ["My brain finds a reason to wait", "Something in me closes before I even get there"]
+  },
+  {
+    q: "Is there a destination you keep coming back to without ever committing?",
+    opts: ["The same one. I know it by heart.", "I research everything and commit to nothing"]
+  },
+  {
+    q: "How long have you been almost ready?",
+    opts: ["A few months", "Longer than I want to say out loud"]
+  },
+  {
+    q: "What are you actually waiting for?",
+    opts: ["To feel ready", "The right moment. The right person. Something."]
+  }
+];
+
+var qB = [
+  {
+    q: "After your last trip, what happened?",
+    opts: ["I came home wanting more but have not booked anything since", "I booked again, but something smaller than what I actually wanted"]
+  },
+  {
+    q: "When you picture your next trip, what does it look like?",
+    opts: ["Something bolder than before, but I keep not committing to it", "Something familiar and safe, even though part of me wants more"]
+  },
+  {
+    q: "When you start planning something that genuinely excites you, what usually happens to the plan?",
+    opts: ["It slowly becomes something smaller and safer before I commit", "It stays bold in my head but I never actually book it"]
+  },
+  {
+    q: "You proved you can do this. So what are you actually waiting for?",
+    opts: ["I do not know. That is the problem.", "Something that feels like permission to want more"]
+  }
+];
+
+function setProg(step) {
+  var pct = Math.round((step / TOTAL) * 100);
+  document.getElementById('pf').style.width = pct + '%';
+  document.getElementById('pp').textContent = pct + '%';
+}
+
+function chrome(show) {
+  var d = show ? 'block' : 'none';
+  document.getElementById('pw').style.display = d;
+  document.getElementById('pp').style.display = d;
+  document.getElementById('tr').style.display = d;
+  document.getElementById('ft').style.display = d;
+}
+
+function go(fn) {
+  var c = document.getElementById('card');
+  c.classList.add('hidden');
+  setTimeout(function() { fn(); setTimeout(function() { c.classList.remove('hidden'); }, 30); }, 300);
+}
+
+function back(fn) {
+  return '<button class="btn-back" onclick="' + fn + '"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>Back</button>';
+}
+
+function showIntro() {
+  branch = null;
+  chrome(false);
+  document.getElementById('card').innerHTML =
+    '<div class="center">' +
+    '<span class="lbl">Solo &amp; Fearless</span>' +
+    '<h1>Find out exactly<br>where you are stuck</h1>' +
+    '<div class="divider center"></div>' +
+    '<p class="intro-text">I am going to ask you five questions.<br>Be honest with me.<br>I already know the answer before you do.</p>' +
+    '<button class="btn-start" onclick="showQ1()">I am ready</button>' +
+    '</div>';
+}
+
+function restart() { go(showIntro); }
+
+function showQ1() {
+  go(function() {
+    chrome(true);
+    setProg(1);
+    document.getElementById('card').innerHTML =
+      back('go(showIntro)') +
+      '<span class="lbl">Question 1 of 5</span>' +
+      '<h2>Have you ever booked a solo trip and actually gone?</h2>' +
+      '<button class="option" onclick="pickB(\'b\')">Yes, I have taken at least one solo trip</button>' +
+      '<button class="option" onclick="pickB(\'a\')">No, I have never booked one</button>';
+  });
+}
+
+function pickB(b) { branch = b; showBQ(0); }
+
+function showBQ(idx) {
+  go(function() {
+    setProg(idx + 2);
+    var list = branch === 'a' ? qA : qB;
+    var item = list[idx];
+    var backFn = idx === 0 ? 'showQ1()' : 'showBQ(' + (idx - 1) + ')';
+    var opts = item.opts.map(function(o) {
+      return '<button class="option" onclick="nextQ(' + idx + ')">' + o + '</button>';
+    }).join('');
+    document.getElementById('card').innerHTML =
+      back(backFn) +
+      '<span class="lbl">Question ' + (idx + 2) + ' of 5</span>' +
+      '<h2>' + item.q + '</h2>' +
+      opts;
+  });
+}
+
+function nextQ(idx) {
+  var list = branch === 'a' ? qA : qB;
+  if (idx < list.length - 1) { showBQ(idx + 1); } else { showResult(); }
+}
+
+function showResult() {
+  go(function() {
+    chrome(false);
+    var html = '';
+    if (branch === 'a') {
+      html =
+        '<span class="lbl">Here is what is actually going on with you</span>' +
+        '<p class="result-name">You are a Tab Closer.</p>' +
+        '<div class="divider"></div>' +
+        '<div class="result-body">' +
+        '<p>You have a destination. You have done the research. You have probably calculated the budget more than once.</p>' +
+        '<p>You have not booked anything.</p>' +
+        '<p>Your brain is doing exactly what it was designed to do. Keeping you exactly where you are. The problem is where you are is not where you want to be.</p>' +
+        '<p class="italic">The fear is not about the trip. It never was.</p>' +
+        '</div>' +
+        '<div class="bq"><p>I made a free course for you. It explains exactly what is happening in your brain every time you close that tab, and why you are not broken for feeling it.</p></div>' +
+        '<a class="btn-result" href="https://www.skool.com/solo-and-fearless-3331/classroom/3bf9b2b5?md=dbf8fed2e2a34bf7bf358c237994eb44" target="_blank">Start here: Why You Keep Chickening Out</a>' +
+        '<button class="btn-again" onclick="restart()">Start over</button>';
+    } else {
+      html =
+        '<span class="lbl">Here is what is actually going on with you</span>' +
+        '<p class="result-name">You are a Safe Booker.</p>' +
+        '<div class="divider"></div>' +
+        '<div class="result-body">' +
+        '<p>You proved you could do it. And then you let the proof sit there.</p>' +
+        '<p>Your comfort zone did not disappear after your first trip. It expanded just enough to feel like freedom. But you already know it is not.</p>' +
+        '<p>That quiet ache when you book the smaller trip instead of the one that actually excited you? That is not practicality. That is settling.</p>' +
+        '<p class="italic">You know the difference. You have always known the difference.</p>' +
+        '</div>' +
+        '<div class="bq"><p>I made a free course for you. It names the pattern you have been stuck in, and it is sharper than you are expecting.</p></div>' +
+        '<a class="btn-result" href="https://www.skool.com/solo-and-fearless-3331/classroom/ecd260c1?md=432bdcdad9e4462e8bdad88e559f23ea" target="_blank">Start here: Why You Keep Playing It Small</a>' +
+        '<button class="btn-again" onclick="restart()">Start over</button>';
+    }
+    document.getElementById('card').innerHTML = html;
+  });
+}
+
+showIntro();
+</script>
+</body>
+</html>

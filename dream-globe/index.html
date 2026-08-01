@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solo & Fearless Dream Destinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Re-skinned 1 August 2026 to the Solo & Fearless language: the same
+   Montserrat as the website and the platform, the lit teal from the login
+   screen, pill buttons with their own glow, and surfaces that lift.
+   Only the look changed. Every word and every interaction is untouched. */
+:root{--teal:#2C5F5D;--teal-lit:#37716E;--gold:#D4A574;--gold-lit:#E0B98A;--cream:#F8F6F0;--coral:#E8A87C;--char:#3A3A3A;--line:#E5E0D5}
+*{box-sizing:border-box;margin:0;padding:0}
+/* The cream is never flat: gold and coral catch the corners, teal warms the
+   bottom, the same scattered light as every other surface in the brand. */
+body{font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--char);min-height:100vh;line-height:1.4;
+  background:
+    radial-gradient(520px 320px at 8% 4%, rgba(212,165,116,0.20), rgba(212,165,116,0) 70%),
+    radial-gradient(460px 300px at 94% 12%, rgba(232,168,124,0.18), rgba(232,168,124,0) 70%),
+    radial-gradient(600px 360px at 50% 104%, rgba(44,95,93,0.10), rgba(44,95,93,0) 72%),
+    var(--cream);
+  background-attachment:fixed}
+/* The real lit teal, the same light as the login screen and the diagnostic:
+   gold falling in from the top left, green rising at the bottom right, over
+   a deep teal that is never one flat colour. */
+header{color:var(--cream);padding:18px 24px;text-align:center;position:relative;box-shadow:0 8px 22px rgba(44,95,93,0.32);
+  background:
+    radial-gradient(900px 400px at 15% -30%, rgba(212,165,116,0.32), rgba(212,165,116,0) 70%),
+    radial-gradient(760px 380px at 88% 130%, rgba(63,163,122,0.26), rgba(63,163,122,0) 70%),
+    linear-gradient(160deg, #1B403C 0%, #142E2C 58%, #0E211F 100%);
+  z-index:1}
+.admin-tg{position:absolute;top:50%;right:18px;transform:translateY(-50%);background:transparent;border:1px solid rgba(248,246,240,.25);color:var(--cream);opacity:.35;cursor:pointer;font-size:22px;width:28px;height:28px;border-radius:14px;padding:0;font-family:inherit;font-weight:bold;display:flex;align-items:center;justify-content:center;line-height:1}
+.admin-tg:hover{opacity:.9;background:rgba(248,246,240,.1)}
+header h1{font-size:22px;font-weight:700;letter-spacing:-0.01em}
+header p{font-size:13px;opacity:.85;margin-top:4px}
+/* The map contours the community has behind its cream, exactly as they are
+   drawn there: barely-there teal and coral lines, the whole set at half
+   strength, sitting behind everything and invisible to the mouse. */
+.sf-contours{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:0;opacity:.5}
+/* The globe card is only ever as wide as the globe itself, so no empty white
+   is left beside it. The pair is centred on the page instead of stretched. */
+.app{display:grid;grid-template-columns:auto 320px;justify-content:center;gap:16px;padding:16px;max-width:1500px;margin:0 auto;position:relative;z-index:1}
+/* Both panels are cards now: a gold rule on top and a teal-tinted lift. */
+.left{width:min(calc(100vh - 230px),calc(100vw - 400px));align-self:start;background:#fff;border-radius:16px;border-top:3px solid var(--gold);overflow:hidden;box-shadow:0 10px 30px rgba(44,95,93,.09)}
+.admin{display:none;padding:14px 16px;gap:10px;align-items:flex-end;flex-wrap:wrap;
+  background:
+    radial-gradient(700px 320px at 12% -40%, rgba(212,165,116,0.30), rgba(212,165,116,0) 70%),
+    radial-gradient(600px 300px at 90% 140%, rgba(63,163,122,0.24), rgba(63,163,122,0) 70%),
+    linear-gradient(160deg, #1B403C 0%, #142E2C 58%, #0E211F 100%)}
+.admin.show{display:flex}
+.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:130px;position:relative}
+.field label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--cream);opacity:.85;font-weight:600}
+/* Fields: white, softly sunk, with the gold ring when she is typing in them. */
+.field input{background:#fff;border:1px solid var(--line);padding:9px 11px;border-radius:12px;color:var(--char);font-size:14px;font-family:inherit;width:100%;box-shadow:inset 0 2px 4px rgba(44,95,93,.07)}
+.field input:focus{outline:none;border-color:var(--gold);box-shadow:inset 0 2px 4px rgba(44,95,93,.07),0 0 0 3px rgba(212,165,116,.18)}
+.btn{border:none;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:transform .2s,box-shadow .2s}
+.btn-gold{background:linear-gradient(to bottom,var(--gold-lit),var(--gold));color:var(--char);box-shadow:0 8px 22px rgba(212,165,116,.45)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,165,116,.55)}
+.btn-gold:active{transform:translateY(0)}
+.btn-ghost{background:#fff;color:var(--teal);border:1px solid rgba(212,165,116,.55);box-shadow:0 8px 22px rgba(212,165,116,.30)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,165,116,.42)}
+.btn-ghost:active{transform:translateY(0)}
+.hint{font-size:11px;color:var(--cream);opacity:.65;padding:6px 2px 0;width:100%}
+.gw{position:relative;background:radial-gradient(circle at 35% 30%,#0a2030 0%,#03080f 90%);aspect-ratio:1;width:100%}
+svg.globe{width:100%;height:100%;display:block;cursor:grab;user-select:none;touch-action:none}
+svg.globe:active{cursor:grabbing}
+.tt{position:absolute;background:rgba(58,58,58,.95);color:var(--cream);padding:9px 14px;border-radius:12px;font-size:13px;pointer-events:none;transform:translate(-50%,calc(-100% - 14px));opacity:0;transition:opacity .15s;z-index:50;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tt strong{color:var(--gold)}
+.zc{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:6px}
+/* The two zoom buttons sit on the dark globe, so they take the quiet
+   outline: white, a gold edge and a gold glow of their own. */
+.zc button{width:36px;height:36px;border-radius:999px;background:#fff;border:1px solid rgba(212,165,116,.55);color:var(--teal);font-size:20px;font-weight:bold;cursor:pointer;font-family:inherit;padding:0;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 8px 22px rgba(212,165,116,.30);transition:transform .2s,box-shadow .2s}
+.zc button:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,165,116,.42)}
+.zc button:active{transform:translateY(0)}
+.sb{background:#fff;border-radius:16px;border-top:3px solid var(--gold);padding:16px;box-shadow:0 10px 30px rgba(44,95,93,.09);max-height:calc(100vh - 100px);display:flex;flex-direction:column;overflow:hidden}
+.stats{background:var(--cream);border-top:1px solid rgba(212,165,116,.4);padding:12px;border-radius:14px;margin-bottom:12px;text-align:center}
+.stats .num{font-size:26px;font-weight:700;color:var(--teal);display:block;line-height:1.1}
+.stats .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--char);opacity:.7;margin-top:2px;display:block}
+/* The two tabs are the platform's segmented control: both lit, the chosen
+   one carrying the teal gradient and its glow. */
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:11px 8px;background:#fff;border:2px solid var(--line);border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;color:var(--char);font-family:inherit;text-transform:uppercase;letter-spacing:.5px;box-shadow:0 10px 30px rgba(44,95,93,.09);transition:all .15s ease,transform .2s,box-shadow .2s}
+.tab:hover{transform:translateY(-2px)}
+.tab:active{transform:translateY(0)}
+.tab.active{color:#fff;font-weight:700;border-color:var(--teal);background:linear-gradient(to bottom,var(--teal-lit),var(--teal));box-shadow:0 8px 22px rgba(44,95,93,.32)}
+.list{flex:1;overflow-y:auto;padding-right:4px}
+.list::-webkit-scrollbar{width:6px}
+.list::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+/* Every row in the list is a card she can pick: it lifts, and the one she
+   has picked takes the lit gold, the same gold as its pin on the globe. */
+.item{padding:10px 14px;background:#fff;border:2px solid var(--line);border-radius:14px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:8px;box-shadow:0 10px 30px rgba(44,95,93,.09);transition:all .15s ease,transform .2s,box-shadow .2s}
+.item:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(44,95,93,.14)}
+.item:active{transform:translateY(0)}
+.item.active{background:linear-gradient(to bottom,var(--gold-lit),var(--gold));border-color:var(--gold);color:var(--char);font-weight:700;box-shadow:0 8px 22px rgba(212,165,116,.45)}
+.item span:first-child{overflow:hidden;text-overflow:ellipsis}
+.badge{background:var(--teal);color:var(--cream);font-size:11px;padding:2px 8px;border-radius:10px;min-width:22px;text-align:center;font-weight:600;flex-shrink:0}
+.item.active .badge{background:var(--char);color:var(--cream)}
+.sub{padding:10px 12px 10px 20px;background:#f9f7ef;border-top:1px solid rgba(212,165,116,.4);border-radius:14px;margin:-4px 0 8px}
+/* The names inside an opened row are pressable too, so they are lit as well. */
+.sub-i{font-size:13px;padding:7px 12px;margin-bottom:5px;cursor:pointer;color:var(--teal);background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;justify-content:space-between;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(44,95,93,.09);transition:transform .2s,box-shadow .2s}
+.sub-i:last-child{margin-bottom:0}
+.sub-i:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(44,95,93,.14)}
+.sub-i:active{transform:translateY(0)}
+.sub-i span:first-child:hover{text-decoration:underline}
+.del{background:#fff;border:1px solid rgba(212,165,116,.55);color:#c25e5e;cursor:pointer;font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;font-family:inherit;flex-shrink:0;box-shadow:0 8px 22px rgba(212,165,116,.30);transition:transform .2s,box-shadow .2s}
+.del:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,165,116,.42)}
+.del:active{transform:translateY(0)}
+.community-btn{display:block;background:linear-gradient(to bottom,var(--gold-lit),var(--gold));color:var(--char);text-align:center;padding:14px;border-radius:999px;font-weight:700;text-decoration:none;font-size:14px;margin-top:12px;box-shadow:0 8px 22px rgba(212,165,116,.45);transition:transform .2s,box-shadow .2s;flex-shrink:0}
+.community-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,165,116,.55)}
+.community-btn:active{transform:translateY(0)}
+.empty{color:#999;font-size:13px;padding:30px 16px;text-align:center;line-height:1.6}
+.ac{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:12px;border-top:1px solid rgba(212,165,116,.4);box-shadow:0 10px 30px rgba(44,95,93,.18);max-height:220px;overflow-y:auto;z-index:100}
+.ac-i{padding:9px 13px;cursor:pointer;color:var(--char);font-size:13px;font-weight:500;border-bottom:1px solid #f4f0e3;transition:background .15s}
+.ac-i:last-child{border-bottom:none}
+/* A suggestion she is about to pick takes the gold edge, the same as every
+   option she picks in the diagnostic. Inset, so no text moves. */
+.ac-i:hover,.ac-i.hv{background:var(--cream);box-shadow:inset 3px 0 0 var(--gold)}
+.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--cream);font-size:13px;opacity:.6}
+@media (max-width:768px){.app{grid-template-columns:1fr;padding:8px;gap:8px}.left{width:100%}.admin{flex-direction:column;align-items:stretch}.field{min-width:0}.sb{max-height:60vh}}
+</style>
+</head>
+<body>
+
+<svg class="sf-contours" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g fill="none" stroke="#2C5F5D" stroke-opacity=".10" stroke-width="1.1">
+    <path d="M-60 210 C 240 130, 430 300, 700 235 S 1180 90, 1520 200" />
+    <path d="M-60 260 C 250 185, 440 350, 705 288 S 1185 145, 1520 252" />
+    <path d="M-60 312 C 262 240, 452 402, 712 342 S 1192 200, 1520 306" />
+    <path d="M-60 620 C 260 700, 470 545, 730 612 S 1200 742, 1520 645" />
+    <path d="M-60 672 C 268 752, 480 598, 738 664 S 1205 792, 1520 697" />
+  </g>
+  <g fill="none" stroke="#E8A87C" stroke-opacity=".16" stroke-width="1.1">
+    <path d="M-60 366 C 272 296, 462 456, 720 396 S 1198 256, 1520 360" />
+    <path d="M-60 566 C 254 646, 462 492, 722 558 S 1196 688, 1520 592" />
+  </g>
+</svg>
+
+<header>
+  <h1>Solo & Fearless Dream Destinations</h1>
+  <p>Dream destinations from our community</p>
+  <button class="admin-tg" id="adminTg" aria-label="Admin access" title="Admin">·</button>
+</header>
+
+<div class="app">
+  <div class="left">
+    <div class="admin" id="admin">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="nameIn" autocomplete="off" maxlength="40">
+      </div>
+      <div class="field">
+        <label>Destination</label>
+        <input type="text" id="destIn" autocomplete="off" maxlength="60">
+        <div class="ac" id="ac" style="display:none"></div>
+      </div>
+      <button class="btn btn-gold" id="addBtn">Add Pin</button>
+      <button class="btn btn-ghost" id="expBtn">Export JSON</button>
+      <button class="btn btn-ghost" id="impBtn">Import JSON</button>
+      <input type="file" id="impFile" accept=".json" style="display:none">
+      <div class="hint">Pick from the suggestions for accurate placement. Drag to spin, scroll to zoom.</div>
+    </div>
+    <div class="gw">
+      <svg class="globe" id="svg" viewBox="0 0 600 600"></svg>
+      <div class="tt" id="tt"></div>
+      <div class="loader" id="loader">Loading globe...</div>
+      <div class="zc">
+        <button id="zin" title="Zoom in">+</button>
+        <button id="zout" title="Zoom out">−</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="sb">
+    <div class="stats">
+      <span class="num" id="stat">0</span>
+      <span class="lbl">dreams pinned</span>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-t="top">Top Destinations</button>
+      <button class="tab" data-t="dreamers">Dreamers</button>
+    </div>
+    <div class="list" id="list"></div>
+    <a href="https://www.skool.com/solo-and-fearless-3331?c=e38157b1c48c4e6caf3d0a407afd69d7&s=newest-cm&fl=" target="_blank" rel="noopener" class="community-btn">Return to Skool</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+<script>
+const DESTS=[
+["Paris",48.86,2.35],["London",51.51,-0.13],["Edinburgh",55.95,-3.19],["Dublin",53.35,-6.26],["Amsterdam",52.37,4.9],["Brussels",50.85,4.35],["Bruges",51.21,3.22],["Berlin",52.52,13.4],["Munich",48.14,11.58],["Hamburg",53.55,9.99],["Frankfurt",50.11,8.68],["Cologne",50.94,6.96],["Vienna",48.21,16.37],["Salzburg",47.8,13.04],["Hallstatt",47.56,13.65],["Zurich",47.38,8.54],["Geneva",46.2,6.14],["Lucerne",47.05,8.31],["Interlaken",46.69,7.86],["Zermatt",46.02,7.75],["Lauterbrunnen",46.59,7.91],
+["Rome",41.9,12.5],["Florence",43.77,11.25],["Venice",45.44,12.32],["Milan",45.46,9.19],["Naples",40.85,14.27],["Amalfi Coast",40.63,14.6],["Capri",40.55,14.24],["Sicily",37.6,14.02],["Sardinia",40.12,9.01],["Cinque Terre",44.13,9.71],["Tuscany",43.32,11.33],["Lake Como",46,9.26],
+["Madrid",40.42,-3.7],["Barcelona",41.39,2.16],["Sevilla",37.39,-5.98],["Granada",37.18,-3.6],["Valencia",39.47,-0.38],["Ibiza",38.91,1.43],["Mallorca",39.69,3.02],["Tenerife",28.29,-16.62],["Lisbon",38.72,-9.14],["Porto",41.16,-8.62],["Algarve",37.02,-7.93],["Madeira",32.76,-16.96],["Azores",37.74,-25.67],
+["Athens",37.98,23.73],["Santorini",36.39,25.46],["Mykonos",37.45,25.33],["Crete",35.24,24.81],["Rhodes",36.43,28.22],["Corfu",39.62,19.92],["Dubrovnik",42.65,18.09],["Split",43.51,16.44],["Hvar",43.17,16.44],["Plitvice",44.88,15.62],["Ljubljana",46.06,14.51],["Lake Bled",46.36,14.11],
+["Nice",43.7,7.27],["Cannes",43.55,7.02],["Provence",43.95,4.81],["Loire Valley",47.5,0.5],["Bordeaux",44.84,-0.58],["Lyon",45.76,4.83],["Marseille",43.3,5.37],
+["Stockholm",59.33,18.07],["Copenhagen",55.68,12.57],["Oslo",59.91,10.75],["Bergen",60.39,5.32],["Lofoten Islands",68.1,13.62],["Tromso",69.65,18.96],["Helsinki",60.17,24.94],["Rovaniemi",66.5,25.73],["Lapland",67.5,26],["Reykjavik",64.13,-21.94],["Blue Lagoon",63.88,-22.45],
+["Prague",50.08,14.43],["Cesky Krumlov",48.81,14.32],["Budapest",47.5,19.04],["Krakow",50.06,19.94],["Warsaw",52.23,21.01],["Tallinn",59.44,24.75],["Riga",56.95,24.11],["Vilnius",54.69,25.28],["Moscow",55.76,37.62],["St Petersburg",59.93,30.34],
+["Istanbul",41.01,28.98],["Cappadocia",38.65,34.83],["Antalya",36.9,30.71],["Bodrum",37.04,27.43],["Dubai",25.2,55.27],["Abu Dhabi",24.45,54.38],["Doha",25.29,51.53],["Muscat",23.59,58.41],["Jerusalem",31.78,35.22],["Tel Aviv",32.08,34.78],["Bethlehem",31.71,35.2],["Petra",30.33,35.44],["Amman",31.95,35.93],["Wadi Rum",29.58,35.42],["Beirut",33.89,35.5],["Mecca",21.42,39.83],["Riyadh",24.71,46.68],
+["Cairo",30.04,31.24],["Luxor",25.69,32.64],["Sharm El Sheikh",27.92,34.33],["Hurghada",27.26,33.81],["Marrakech",31.63,-7.99],["Casablanca",33.57,-7.59],["Fes",34.02,-5],["Chefchaouen",35.17,-5.27],["Sahara Desert",23.42,25.66],["Tunis",36.81,10.18],["Algiers",36.75,3.06],
+["Nairobi",-1.29,36.82],["Maasai Mara",-1.5,35.14],["Serengeti",-2.33,34.83],["Kilimanjaro",-3.07,37.36],["Zanzibar",-6.17,39.2],["Addis Ababa",9.03,38.74],["Cape Town",-33.92,18.42],["Johannesburg",-26.2,28.05],["Kruger National Park",-23.99,31.55],["Garden Route",-34.05,23.37],["Victoria Falls",-17.92,25.85],["Windhoek",-22.56,17.08],["Madagascar",-18.77,46.87],["Mauritius",-20.35,57.55],["Seychelles",-4.68,55.49],["Lagos",6.52,3.38],["Accra",5.6,-0.19],["Dakar",14.69,-17.45],
+["Tokyo",35.68,139.65],["Kyoto",35.01,135.77],["Osaka",34.69,135.5],["Hokkaido",43.06,141.35],["Okinawa",26.21,127.68],["Mount Fuji",35.36,138.73],["Hakone",35.23,139.1],["Nara",34.69,135.81],["Hiroshima",34.39,132.46],["Seoul",37.57,126.98],["Jeju Island",33.49,126.5],["Busan",35.18,129.08],["Beijing",39.9,116.41],["Shanghai",31.23,121.47],["Hong Kong",22.32,114.17],["Xi'an",34.34,108.94],["Guilin",25.27,110.29],["Chengdu",30.57,104.07],["Taipei",25.03,121.57],
+["Bangkok",13.75,100.5],["Chiang Mai",18.79,98.99],["Phuket",7.88,98.39],["Krabi",8.05,98.91],["Koh Samui",9.51,99.99],["Pattaya",12.93,100.88],["Hanoi",21.03,105.85],["Ho Chi Minh City",10.82,106.63],["Halong Bay",20.91,107.18],["Hoi An",15.88,108.34],["Da Nang",16.05,108.21],["Sapa",22.34,103.84],["Siem Reap",13.36,103.86],["Phnom Penh",11.56,104.92],["Vientiane",17.97,102.61],["Luang Prabang",19.89,102.13],["Yangon",16.87,96.2],
+["Singapore",1.35,103.82],["Kuala Lumpur",3.14,101.69],["Langkawi",6.35,99.8],["Penang",5.41,100.33],["Borneo",1,114],["Bali",-8.34,115.09],["Jakarta",-6.21,106.85],["Lombok",-8.65,116.32],["Komodo",-8.59,119.49],["Yogyakarta",-7.8,110.36],["Manila",14.6,120.98],["Boracay",11.96,121.93],["Palawan",9.84,118.74],["Cebu",10.32,123.9],
+["Mumbai",19.08,72.88],["Delhi",28.61,77.21],["Jaipur",26.92,75.79],["Agra",27.18,78.04],["Udaipur",24.58,73.68],["Jodhpur",26.24,73.02],["Goa",15.3,74.12],["Kerala",10.85,76.27],["Varanasi",25.32,82.97],["Rishikesh",30.09,78.27],["Ladakh",34.15,77.58],["Kathmandu",27.71,85.32],["Pokhara",28.21,83.99],["Everest Base Camp",28,86.85],["Thimphu",27.47,89.64],["Paro",27.43,89.42],["Colombo",6.93,79.86],["Kandy",7.29,80.64],["Galle",6.03,80.22],["Maldives",3.2,73.22],
+["Sydney",-33.87,151.21],["Melbourne",-37.81,144.96],["Brisbane",-27.47,153.03],["Perth",-31.95,115.86],["Gold Coast",-28.02,153.4],["Cairns",-16.92,145.78],["Great Barrier Reef",-18.29,147.7],["Uluru",-25.34,131.04],["Tasmania",-42.04,146.83],["Auckland",-36.85,174.76],["Wellington",-41.29,174.78],["Queenstown",-45.03,168.66],["Milford Sound",-44.67,167.92],["Rotorua",-38.14,176.25],["Fiji",-17.71,178.07],["Bora Bora",-16.5,-151.74],["Tahiti",-17.65,-149.43],["Papua New Guinea",-6.31,143.96],
+["New York",40.71,-74.01],["Los Angeles",34.05,-118.24],["San Francisco",37.77,-122.42],["Chicago",41.88,-87.63],["Miami",25.76,-80.19],["Boston",42.36,-71.06],["Washington DC",38.91,-77.04],["Seattle",47.61,-122.33],["Portland",45.52,-122.68],["Las Vegas",36.17,-115.14],["Nashville",36.16,-86.78],["New Orleans",29.95,-90.07],["Austin",30.27,-97.74],["Charleston",32.78,-79.93],["Savannah",32.08,-81.1],["Key West",24.56,-81.78],["Aspen",39.19,-106.82],["Yellowstone",44.43,-110.59],["Yosemite",37.87,-119.54],["Grand Canyon",36.07,-112.12],["Sedona",34.87,-111.76],["Niagara Falls",43.1,-79.06],["San Diego",32.72,-117.16],["Napa Valley",38.3,-122.3],["Lake Tahoe",39.1,-120.04],["Big Sur",36.27,-121.81],
+["Honolulu",21.31,-157.86],["Maui",20.8,-156.33],["Kauai",22.1,-159.5],["Big Island",19.59,-155.5],["Oahu",21.47,-157.97],["Hawaii",20.79,-156.5],
+["Toronto",43.65,-79.38],["Vancouver",49.28,-123.12],["Montreal",45.5,-73.57],["Quebec City",46.81,-71.21],["Banff",51.18,-115.57],["Jasper",52.87,-118.08],
+["Mexico City",19.43,-99.13],["Cancun",21.16,-86.85],["Tulum",20.21,-87.47],["Playa del Carmen",20.63,-87.07],["Cabo San Lucas",22.89,-109.92],["Puerto Vallarta",20.65,-105.23],["Oaxaca",17.07,-96.72],
+["Havana",23.11,-82.37],["Varadero",23.14,-81.29],["Nassau",25.05,-77.36],["Punta Cana",18.58,-68.4],["San Juan",18.47,-66.11],["St Lucia",13.91,-60.98],["Barbados",13.19,-59.54],["St Maarten",18.04,-63.06],["Antigua",17.06,-61.8],["Aruba",12.52,-69.97],["Curacao",12.17,-68.99],["Turks and Caicos",21.69,-71.8],["Cayman Islands",19.31,-81.25],["Bermuda",32.32,-64.78],["Montego Bay",18.47,-77.92],["Bonaire",12.18,-68.26],["Saba",17.63,-63.23],["St Eustatius",17.5,-62.97],["Statia",17.5,-62.97],["St Barths",17.9,-62.83],["Anguilla",18.22,-63.07],["St Kitts",17.36,-62.78],["Nevis",17.16,-62.58],["Montserrat",16.74,-62.19],["Guadeloupe",16.27,-61.55],["Martinique",14.64,-61.02],["Dominica",15.41,-61.37],["St Vincent",13.25,-61.2],["Grenada",12.11,-61.68],["Trinidad",10.69,-61.22],["Tobago",11.18,-60.74],["Barbuda",17.63,-61.78],["British Virgin Islands",18.43,-64.62],["US Virgin Islands",18.34,-64.93],["St Thomas",18.34,-64.93],["Tortola",18.43,-64.62],["Roatan",16.37,-86.45],["San Andres",12.55,-81.72],["Margarita Island",10.99,-63.91],["Malta",35.94,14.38],["Cyprus",35.13,33.43],["Corsica",42.04,9.01],["Gran Canaria",27.93,-15.59],["Lanzarote",29.04,-13.59],["Fuerteventura",28.36,-14.05],["Canary Islands",28.29,-16.62],["Reunion",-21.11,55.54],["Cook Islands",-21.24,-159.78],["Vanuatu",-15.38,166.96],["Samoa",-13.76,-172.1],["Tonga",-21.18,-175.2],["New Caledonia",-20.9,165.62],["Solomon Islands",-9.65,160.16],["Andaman Islands",11.74,92.66],["Phi Phi Islands",7.74,98.77],["Comoros",-11.88,43.87],["Cape Verde",16.54,-23.05],["Ischia",40.73,13.95],["Elba",42.78,10.24],["Norfolk Island",-29.04,167.95],
+["Belize",17.5,-88.2],["Caye Caulker",17.74,-88.03],["Guatemala City",14.63,-90.51],["Antigua Guatemala",14.56,-90.73],["Tikal",17.22,-89.62],["San Jose Costa Rica",9.93,-84.08],["Manuel Antonio",9.39,-84.15],["Tamarindo",10.3,-85.84],["Panama City",8.98,-79.52],["Bocas del Toro",9.34,-82.24],
+["Cartagena",10.39,-75.51],["Bogota",4.71,-74.07],["Medellin",6.24,-75.58],["Quito",-0.18,-78.47],["Galapagos",-0.95,-90.97],["Lima",-12.05,-77.04],["Cusco",-13.53,-71.97],["Machu Picchu",-13.16,-72.55],["La Paz",-16.5,-68.15],["Salar de Uyuni",-20.13,-67.49],["Santiago",-33.45,-70.67],["Patagonia",-49.36,-72.3],["Easter Island",-27.11,-109.35],["Buenos Aires",-34.6,-58.38],["Mendoza",-32.89,-68.84],["Bariloche",-41.13,-71.31],["Iguazu Falls",-25.69,-54.44],["Ushuaia",-54.81,-68.3],["Rio de Janeiro",-22.91,-43.17],["Sao Paulo",-23.55,-46.63],["Salvador",-12.97,-38.51],["Florianopolis",-27.59,-48.55],["Fernando de Noronha",-3.85,-32.42],["Manaus",-3.12,-60.02],["Montevideo",-34.9,-56.16],["Punta del Este",-34.97,-54.95],
+["USA",39.83,-98.58],["United States",39.83,-98.58],["Canada",56.13,-106.35],["Mexico",23.63,-102.55],["Brazil",-14.24,-51.93],["Argentina",-38.42,-63.62],["Chile",-35.68,-71.54],["Peru",-9.19,-75.02],["Colombia",4.57,-74.3],["Cuba",21.52,-77.78],["Jamaica",18.11,-77.3],["Dominican Republic",18.74,-70.16],["Bahamas",25.03,-77.4],["Costa Rica",9.75,-83.75],["Panama",8.54,-80.78],["Guatemala",15.78,-90.23],["Ecuador",-1.83,-78.18],["Venezuela",6.42,-66.59],["Bolivia",-16.29,-63.59],["Uruguay",-32.52,-55.77],["Paraguay",-23.44,-58.44],
+["France",46.23,2.21],["UK",55.38,-3.44],["United Kingdom",55.38,-3.44],["England",52.36,-1.17],["Scotland",56.49,-4.2],["Wales",52.13,-3.78],["Ireland",53.41,-8.24],["Germany",51.17,10.45],["Spain",40.46,-3.75],["Italy",41.87,12.57],["Portugal",39.4,-8.22],["Greece",39.07,21.82],["Netherlands",52.13,5.29],["Belgium",50.5,4.47],["Switzerland",46.82,8.23],["Austria",47.52,14.55],["Sweden",60.13,18.64],["Norway",60.47,8.47],["Denmark",56.26,9.5],["Finland",61.92,25.75],["Iceland",64.96,-19.02],
+["Poland",51.92,19.15],["Czech Republic",49.82,15.47],["Hungary",47.16,19.5],["Romania",45.94,24.97],["Bulgaria",42.73,25.49],["Croatia",45.1,15.2],["Slovenia",46.15,14.99],["Estonia",58.6,25.01],["Latvia",56.88,24.6],["Lithuania",55.17,23.88],["Russia",61.52,105.32],["Ukraine",48.38,31.17],["Turkey",38.96,35.24],
+["Japan",36.2,138.25],["China",35.86,104.2],["South Korea",35.91,127.77],["Thailand",15.87,100.99],["Vietnam",14.06,108.28],["Cambodia",12.57,104.99],["Laos",19.86,102.5],["Myanmar",21.92,95.96],["Malaysia",4.21,101.98],["Indonesia",-0.79,113.92],["Philippines",12.88,121.77],["India",20.59,78.96],["Sri Lanka",7.87,80.77],["Nepal",28.39,84.12],["Bhutan",27.51,90.43],["Pakistan",30.38,69.35],["Bangladesh",23.68,90.36],
+["UAE",23.42,53.85],["United Arab Emirates",23.42,53.85],["Saudi Arabia",23.89,45.08],["Qatar",25.35,51.18],["Oman",21.51,55.92],["Israel",31.05,34.85],["Jordan",30.59,36.24],["Egypt",26.82,30.8],["Morocco",31.79,-7.09],["Tunisia",33.89,9.54],["South Africa",-30.56,22.94],["Kenya",-0.02,37.91],["Tanzania",-6.37,34.89],["Ethiopia",9.15,40.49],["Zimbabwe",-19.02,29.15],["Namibia",-22.96,18.49],["Botswana",-22.33,24.68],["Australia",-25.27,133.78],["New Zealand",-40.9,174.89],
+["Africa",-8.78,21.51],["Asia",34.05,100.62],["Europe",54.53,15.26],["North America",54.53,-105.26],["South America",-8.78,-55.49],["Oceania",-25.27,140.78],["Antarctica",-82.86,135],["Caribbean",18.2,-66.66],["Scandinavia",62,15],["Mediterranean",37.5,15]
+];
+
+const dmap=new Map();
+DESTS.forEach(([n,la,lo])=>dmap.set(n.toLowerCase(),{name:n,lat:la,lng:lo}));
+
+// Admin password - the password itself is no longer written here, only a
+// fingerprint of it, so this public page cannot tell anyone what it is.
+// The password you type is unchanged.
+const ADMIN_SALT='solo-fearless-dream-globe';
+const ADMIN_HASH='2c96f366f3f209918cd3db3bbd5474bceef029ee91653ecfe493ec56dbd08661';
+async function passOk(p){
+  try{
+    const enc=new TextEncoder();
+    const k=await crypto.subtle.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveBits']);
+    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(ADMIN_SALT),iterations:150000,hash:'SHA-256'},k,256);
+    return [...new Uint8Array(bits)].map(x=>x.toString(16).padStart(2,'0')).join('')===ADMIN_HASH;
+  }catch(e){return false;}
+}
+
+function showAdmin(){
+  document.getElementById('admin').classList.add('show');
+  try{sessionStorage.setItem('adm','1')}catch(e){}
+  if(typeof renderList==='function')renderList();
+}
+function hideAdmin(){
+  document.getElementById('admin').classList.remove('show');
+  try{sessionStorage.removeItem('adm')}catch(e){}
+  if(typeof renderList==='function')renderList();
+}
+
+// Unlock via URL hash, query, or saved session
+let _u=false;
+if(location.hash.includes('admin')||location.search.includes('admin'))_u=true;
+try{if(sessionStorage.getItem('adm')==='1')_u=true}catch(e){}
+if(_u)document.getElementById('admin').classList.add('show');
+
+// Admin button click: lock if open, password prompt if closed
+document.getElementById('adminTg').onclick=async()=>{
+  if(document.getElementById('admin').classList.contains('show')){
+    if(confirm('Lock admin mode?'))hideAdmin();
+    return;
+  }
+  const p=prompt('Admin password:');
+  if(p===null)return;
+  if(await passOk(p))showAdmin();
+  else alert('Wrong password.');
+};
+
+const S={pins:[],selDream:null,selDest:null,tab:'top',rot:[-10,-25,0],sc:270,auto:true};
+const W=600,H=600;
+const svg=d3.select('#svg'),svgN=document.getElementById('svg'),tt=document.getElementById('tt'),wrap=svgN.parentElement;
+const proj=d3.geoOrthographic().scale(S.sc).translate([W/2,H/2]).rotate(S.rot).clipAngle(90);
+const pth=d3.geoPath(proj);
+
+const defs=svg.append('defs');
+const og=defs.append('radialGradient').attr('id','og').attr('cx','35%').attr('cy','30%').attr('r','80%');
+og.append('stop').attr('offset','0%').attr('stop-color','#2b6890');
+og.append('stop').attr('offset','70%').attr('stop-color','#1a4566');
+og.append('stop').attr('offset','100%').attr('stop-color','#0a2540');
+const ag=defs.append('radialGradient').attr('id','ag').attr('cx','50%').attr('cy','50%').attr('r','50%');
+ag.append('stop').attr('offset','85%').attr('stop-color','#4a8fb8').attr('stop-opacity',0);
+ag.append('stop').attr('offset','95%').attr('stop-color','#7ab5da').attr('stop-opacity',0.4);
+ag.append('stop').attr('offset','100%').attr('stop-color','#a8d0ec').attr('stop-opacity',0);
+
+const atmo=svg.append('circle').attr('cx',W/2).attr('cy',H/2).attr('r',S.sc*1.08).attr('fill','url(#ag)');
+const ocean=svg.append('path').datum({type:'Sphere'}).attr('fill','url(#og)');
+const grat=svg.append('path').datum(d3.geoGraticule10()).attr('fill','none').attr('stroke','#fff').attr('stroke-opacity',0.08).attr('stroke-width',0.5);
+const cg=svg.append('g').attr('class','countries');
+const pg=svg.append('g').attr('class','pins');
+
+async function loadWorld(){
+  const urls=['https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json','https://unpkg.com/world-atlas@2/countries-50m.json'];
+  for(const u of urls){
+    try{const r=await fetch(u);if(r.ok)return await r.json();}catch(e){}
+  }
+  throw new Error('no world data');
+}
+
+loadWorld().then(w=>{
+  const f=topojson.feature(w,w.objects.countries).features;
+  cg.selectAll('path').data(f).enter().append('path')
+    .attr('fill','#5a8a5e').attr('stroke','#2d4a2f').attr('stroke-width',0.35).attr('stroke-linejoin','round');
+  document.getElementById('loader').style.display='none';
+  update();
+}).catch(()=>{
+  const ld=document.getElementById('loader');
+  ld.textContent='Globe loaded (limited country detail)';
+  setTimeout(()=>ld.style.display='none',2500);
+  update();
+});
+
+function update(){
+  ocean.attr('d',pth);
+  grat.attr('d',pth);
+  cg.selectAll('path').attr('d',pth);
+  atmo.attr('r',S.sc*1.08);
+  renderPins();
+}
+
+function vis(lng,lat){
+  const c=proj.invert([W/2,H/2]);
+  if(!c)return false;
+  return d3.geoDistance([lng,lat],c)<Math.PI/2;
+}
+
+function grpSel(g){
+  if(S.selDest&&S.selDest===g.destination)return true;
+  if(S.selDream&&g.pins.some(p=>p.name===S.selDream))return true;
+  return false;
+}
+
+function renderPins(){
+  pg.selectAll('*').remove();
+  const groups=new Map();
+  S.pins.forEach(p=>{
+    const k=`${p.lat.toFixed(2)},${p.lng.toFixed(2)}`;
+    if(!groups.has(k))groups.set(k,{lat:p.lat,lng:p.lng,destination:p.destination,pins:[]});
+    groups.get(k).pins.push(p);
+  });
+  const sorted=[...groups.values()].sort((a,b)=>(grpSel(a)?1:0)-(grpSel(b)?1:0));
+  
+  sorted.forEach(g=>{
+    if(!vis(g.lng,g.lat))return;
+    const pt=proj([g.lng,g.lat]);
+    if(!pt)return;
+    const [x,y]=pt;
+    const sel=grpSel(g);
+    const n=g.pins.length;
+    const bR=5+Math.min(n-1,4)*1.4;
+    const r=sel?bR+2:bR;
+    const col=sel?'#E8A87C':'#D4A574';
+    const gn=pg.append('g').attr('transform',`translate(${x},${y})`).style('cursor','pointer');
+    
+    if(sel){
+      gn.append('circle').attr('r',r+8).attr('fill','none').attr('stroke','#E8A87C').attr('stroke-width',1.5).attr('opacity',0.5);
+      gn.append('circle').attr('r',r+4).attr('fill','none').attr('stroke','#F8F6F0').attr('stroke-width',0.8).attr('opacity',0.6);
+    }
+    gn.append('circle').attr('r',r).attr('fill',col).attr('stroke','#F8F6F0').attr('stroke-width',2).style('filter','drop-shadow(0 1px 3px rgba(0,0,0,0.5))');
+    
+    if(n>1){
+      gn.append('text').attr('text-anchor','middle').attr('dy',4)
+        .attr('font-size',n>9?'10px':'11px').attr('font-weight','700').attr('fill','#3A3A3A')
+        .style('pointer-events','none').text(n);
+    }
+    if(sel){
+      const names=g.pins.map(p=>p.name);
+      let lbl=names.length===1?`${names[0]} • ${g.destination}`:`${g.destination} (${names.join(', ')})`;
+      if(lbl.length>55)lbl=lbl.substring(0,52)+'...';
+      gn.append('text').attr('text-anchor','middle').attr('y',-r-9)
+        .attr('font-size','12px').attr('font-weight','600').attr('fill','#F8F6F0')
+        .style('text-shadow','0 1px 3px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.8)')
+        .style('pointer-events','none').text(lbl);
+    }
+    
+    gn.on('mouseenter',(e)=>{S.auto=false;showTT(g,e);});
+    gn.on('mousemove',(e)=>moveTT(e));
+    gn.on('mouseleave',()=>{if(!S.selDest&&!S.selDream)S.auto=true;hideTT();});
+    gn.on('click',(e)=>{e.stopPropagation();selDestGlobe(g);});
+  });
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function showTT(g,e){
+  const names=g.pins.map(p=>p.name).join(', ');
+  tt.innerHTML=`<strong>${esc(g.destination)}</strong><br>${esc(names)}`;
+  moveTT(e);
+  tt.style.opacity='1';
+}
+function moveTT(e){
+  const r=wrap.getBoundingClientRect();
+  tt.style.left=(e.clientX-r.left)+'px';
+  tt.style.top=(e.clientY-r.top)+'px';
+}
+function hideTT(){tt.style.opacity='0';}
+
+d3.timer(()=>{
+  if(S.auto&&!S.selDream&&!S.selDest&&!drag){
+    S.rot[0]+=0.08;
+    proj.rotate(S.rot);
+    update();
+  }
+});
+
+let drag=false,dragM=false;
+svg.call(d3.drag().clickDistance(5)
+  .on('start',()=>{drag=true;dragM=false;S.auto=false;})
+  .on('drag',(e)=>{
+    dragM=true;
+    S.rot[0]+=e.dx*0.4;
+    S.rot[1]=Math.max(-90,Math.min(90,S.rot[1]-e.dy*0.4));
+    proj.rotate(S.rot);
+    update();
+  })
+  .on('end',()=>{
+    drag=false;
+    setTimeout(()=>{if(!S.selDream&&!S.selDest)S.auto=true;},1800);
+  })
+);
+
+svg.on('click',()=>{
+  if(dragM)return;
+  S.selDest=null;S.selDream=null;S.auto=true;
+  renderList();update();
+});
+
+document.getElementById('zin').onclick=()=>zoom(1.25);
+document.getElementById('zout').onclick=()=>zoom(1/1.25);
+svgN.addEventListener('wheel',(e)=>{e.preventDefault();zoom(e.deltaY>0?1/1.1:1.1);},{passive:false});
+
+function zoom(f){
+  S.sc=Math.max(150,Math.min(800,S.sc*f));
+  proj.scale(S.sc);
+  update();
+}
+
+function rotTo(lng,lat){
+  S.auto=false;
+  const tgt=[-lng,-lat*0.7,0];
+  const st=[...S.rot];
+  while(tgt[0]-st[0]>180)tgt[0]-=360;
+  while(tgt[0]-st[0]<-180)tgt[0]+=360;
+  const dur=900,t0=Date.now();
+  function anim(){
+    const el=Date.now()-t0;
+    const t=Math.min(el/dur,1);
+    const ez=1-Math.pow(1-t,3);
+    S.rot=[st[0]+(tgt[0]-st[0])*ez,st[1]+(tgt[1]-st[1])*ez,0];
+    proj.rotate(S.rot);
+    update();
+    if(t<1)requestAnimationFrame(anim);
+  }
+  requestAnimationFrame(anim);
+}
+
+function selDestGlobe(g){
+  S.selDest=g.destination;
+  S.selDream=null;
+  rotTo(g.lng,g.lat);
+  renderList();
+}
+
+// Autocomplete
+const destIn=document.getElementById('destIn'),ac=document.getElementById('ac');
+let acI=-1,acM=[];
+
+destIn.addEventListener('input',()=>{
+  const q=destIn.value.trim().toLowerCase();
+  if(q.length<1){ac.style.display='none';acM=[];return;}
+  const m=[];
+  for(const [n,la,lo] of DESTS){
+    const lw=n.toLowerCase();
+    if(lw.startsWith(q))m.push({name:n,lat:la,lng:lo,sc:2});
+    else if(lw.includes(q))m.push({name:n,lat:la,lng:lo,sc:1});
+    if(m.length>=30)break;
+  }
+  m.sort((a,b)=>b.sc-a.sc||a.name.length-b.name.length);
+  acM=m.slice(0,8);
+  acI=-1;
+  if(acM.length===0){ac.style.display='none';return;}
+  ac.innerHTML=acM.map((m,i)=>`<div class="ac-i" data-i="${i}">${esc(m.name)}</div>`).join('');
+  ac.style.display='block';
+  ac.querySelectorAll('.ac-i').forEach(el=>{
+    el.onmousedown=(e)=>{e.preventDefault();pickAc(parseInt(el.dataset.i));};
+  });
+});
+
+function pickAc(i){
+  const m=acM[i];
+  if(!m)return;
+  destIn.value=m.name;
+  ac.style.display='none';
+  acM=[];acI=-1;
+}
+
+destIn.addEventListener('keydown',(e)=>{
+  if(ac.style.display==='none'||acM.length===0){
+    if(e.key==='Enter'){e.preventDefault();addPin();}
+    return;
+  }
+  if(e.key==='ArrowDown'){e.preventDefault();acI=Math.min(acI+1,acM.length-1);updateAcH();}
+  else if(e.key==='ArrowUp'){e.preventDefault();acI=Math.max(acI-1,0);updateAcH();}
+  else if(e.key==='Enter'){e.preventDefault();if(acI>=0)pickAc(acI);addPin();}
+  else if(e.key==='Escape'){ac.style.display='none';}
+});
+
+function updateAcH(){
+  ac.querySelectorAll('.ac-i').forEach((el,i)=>el.classList.toggle('hv',i===acI));
+}
+
+destIn.addEventListener('blur',()=>setTimeout(()=>ac.style.display='none',200));
+
+document.getElementById('addBtn').onclick=addPin;
+document.getElementById('nameIn').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){e.preventDefault();destIn.focus();}
+});
+
+function addPin(){
+  const name=document.getElementById('nameIn').value.trim();
+  const dest=destIn.value.trim();
+  if(!name){alert('Add a name.');document.getElementById('nameIn').focus();return;}
+  if(!dest){alert('Add a destination.');destIn.focus();return;}
+  const m=dmap.get(dest.toLowerCase());
+  if(!m){alert(`I don't recognize "${dest}". Pick from the suggestions or try a country or major city name.`);destIn.focus();return;}
+  S.pins.push({id:'p'+Date.now()+Math.random().toString(36).substr(2,5),name,destination:m.name,lat:m.lat,lng:m.lng});
+  destIn.value='';
+  document.getElementById('nameIn').value='';
+  document.getElementById('nameIn').focus();
+  S.selDest=m.name;S.selDream=null;
+  rotTo(m.lng,m.lat);
+  saveState();renderList();updateStats();
+}
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    S.tab=t.dataset.t;
+    renderList();
+  };
+});
+
+function renderList(){
+  const lst=document.getElementById('list');
+  if(S.pins.length===0){
+    lst.innerHTML='<div class="empty">No dreams pinned yet.<br>'+(document.getElementById('admin').classList.contains('show')?'Add a name and destination above to start.':'Check back soon for new pins.')+'</div>';
+    return;
+  }
+  
+  if(S.tab==='top'){
+    const cts=new Map();
+    S.pins.forEach(p=>{
+      if(!cts.has(p.destination))cts.set(p.destination,{count:0,lat:p.lat,lng:p.lng,names:[]});
+      const c=cts.get(p.destination);
+      c.count++;c.names.push(p.name);
+    });
+    const sorted=[...cts.entries()].sort((a,b)=>b[1].count-a[1].count||a[0].localeCompare(b[0]));
+    lst.innerHTML=sorted.map(([d,info])=>{
+      const act=S.selDest===d;
+      const sub=act?`<div class="sub">${info.names.map(n=>`<div class="sub-i"><span>${esc(n)}</span></div>`).join('')}</div>`:'';
+      return `<div class="item ${act?'active':''}" data-dest="${esc(d)}" data-lng="${info.lng}" data-lat="${info.lat}"><span>${esc(d)}</span><span class="badge">${info.count}</span></div>${sub}`;
+    }).join('');
+    lst.querySelectorAll('.item').forEach(el=>{
+      el.onclick=(e)=>{
+        e.stopPropagation();
+        const d=el.dataset.dest;
+        if(S.selDest===d){S.selDest=null;S.auto=true;}
+        else{S.selDest=d;S.selDream=null;rotTo(parseFloat(el.dataset.lng),parseFloat(el.dataset.lat));}
+        renderList();update();
+      };
+    });
+  } else {
+    const bn=new Map();
+    S.pins.forEach(p=>{if(!bn.has(p.name))bn.set(p.name,[]);bn.get(p.name).push(p);});
+    const sorted=[...bn.entries()].sort((a,b)=>b[1].length-a[1].length||a[0].localeCompare(b[0]));
+    const isAdmin=document.getElementById('admin').classList.contains('show');
+    lst.innerHTML=sorted.map(([name,pins])=>{
+      const act=S.selDream===name;
+      const sub=act?`<div class="sub">${pins.map(p=>`<div class="sub-i" data-lat="${p.lat}" data-lng="${p.lng}"><span>${esc(p.destination)}</span>${isAdmin?`<button class="del" data-del="${p.id}">remove</button>`:''}</div>`).join('')}</div>`:'';
+      return `<div class="item ${act?'active':''}" data-name="${esc(name)}"><span>${esc(name)}</span><span class="badge">${pins.length}</span></div>${sub}`;
+    }).join('');
+    lst.querySelectorAll('.item').forEach(el=>{
+      el.onclick=(e)=>{
+        e.stopPropagation();
+        const n=el.dataset.name;
+        if(S.selDream===n){S.selDream=null;S.auto=true;}
+        else{S.selDream=n;S.selDest=null;const f=S.pins.find(p=>p.name===n);if(f)rotTo(f.lng,f.lat);}
+        renderList();update();
+      };
+    });
+    lst.querySelectorAll('.sub-i').forEach(el=>{
+      el.onclick=(e)=>{
+        if(e.target.classList.contains('del'))return;
+        e.stopPropagation();
+        rotTo(parseFloat(el.dataset.lng),parseFloat(el.dataset.lat));
+      };
+    });
+    lst.querySelectorAll('.del').forEach(el=>{
+      el.onclick=(e)=>{
+        e.stopPropagation();
+        const id=el.dataset.del;
+        if(confirm('Remove this pin?')){
+          S.pins=S.pins.filter(p=>p.id!==id);
+          if(S.selDream&&!S.pins.some(p=>p.name===S.selDream)){S.selDream=null;S.auto=true;}
+          saveState();renderList();updateStats();update();
+        }
+      };
+    });
+  }
+}
+
+function updateStats(){
+  document.getElementById('stat').textContent=S.pins.length;
+}
+
+// Export / Import
+document.getElementById('expBtn').onclick=()=>{
+  const data={version:'1.0',updated:new Date().toISOString().split('T')[0],pins:S.pins};
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;a.download='dreams.json';a.click();
+  URL.revokeObjectURL(u);
+};
+
+document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
+document.getElementById('impFile').onchange=(e)=>{
+  const f=e.target.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=(ev)=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(Array.isArray(d.pins)){
+        if(confirm(`Load ${d.pins.length} pins? This replaces current data.`)){
+          S.pins=d.pins;
+          saveState();renderList();updateStats();update();
+        }
+      } else alert('Invalid file format.');
+    }catch(err){alert('Could not parse file.');}
+    e.target.value='';
+  };
+  r.readAsText(f);
+};
+
+// Persistence
+async function saveState(){
+  if(window.storage&&window.storage.set){
+    try{await window.storage.set('dreams',JSON.stringify(S.pins));}catch(e){}
+  }
+}
+
+async function loadState(){
+  try{
+    const r=await fetch('./dreams.json');
+    if(r.ok){
+      const d=await r.json();
+      if(Array.isArray(d.pins)){S.pins=d.pins;return;}
+    }
+  }catch(e){}
+  if(window.storage&&window.storage.get){
+    try{
+      const r=await window.storage.get('dreams');
+      if(r&&r.value)S.pins=JSON.parse(r.value);
+    }catch(e){}
+  }
+}
+
+loadState().then(()=>{renderList();updateStats();update();});
+renderList();updateStats();
+</script>
+</body>
+</html>
