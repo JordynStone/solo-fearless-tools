@@ -1,0 +1,54 @@
+/* Montserrat, served from our own domain.
+
+   Until 1 August 2026 every page pulled this font from fonts.googleapis.com,
+   which handed Google the IP address of every visitor before she had agreed
+   to anything. That is the exact practice a German court ruled against in
+   2022, and it is what would have forced a cookie banner onto a site that
+   otherwise needs none. The files now sit in /fonts/ and nothing leaves
+   this domain.
+
+   One variable font covers every weight from 100 to 900, so the six weights
+   and two italics the site uses all come from four small files instead of
+   sixteen.
+
+   Montserrat is by Julieta Ulanovsky and contributors, under the SIL Open
+   Font License 1.1. Self-hosting is expressly allowed by that licence.
+   Downloaded from Google Fonts, version 31. */
+
+/* latin-ext: the accented letters in place names (Fuerteventura, Curaçao) */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/fonts/montserrat-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin: everything else */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/fonts/montserrat-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/fonts/montserrat-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/fonts/montserrat-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
